@@ -1,6 +1,8 @@
 import React from 'react';
 import { AfterRoot, AfterData } from '@jaredpalmer/after';
 
+import serialize from 'serialize-javascript';
+
 class Document extends React.Component {
   static async getInitialProps({ assets, data, renderPage }) {
     const page = await renderPage();
@@ -8,7 +10,7 @@ class Document extends React.Component {
   }
 
   render() {
-    const { helmet, assets, data, css } = this.props;
+    const { helmet, assets, data, css, serverState } = this.props;
     // get attributes from React Helmet
     const htmlAttrs = helmet.htmlAttributes.toComponent();
     const bodyAttrs = helmet.bodyAttributes.toComponent();
@@ -44,6 +46,11 @@ class Document extends React.Component {
             src={assets.client.js}
             defer
             crossOrigin="anonymous"
+          />
+          <span
+            dangerouslySetInnerHTML={
+              { __html: `<script>window.__PRELOADED_STATE__ = ${serialize(serverState)}</script>` } // prettier-ignore
+            }
           />
         </body>
       </html>

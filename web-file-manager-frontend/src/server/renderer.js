@@ -6,9 +6,11 @@ import {
   MuiThemeProvider,
   createGenerateClassName
 } from '@material-ui/core/styles';
+import { Provider } from 'react-redux';
+
 import { createTheme } from '~/services/theme';
 
-const renderer = node => {
+const renderer = store => node => {
   // Create a sheetsRegistry instance.
   const sheetsRegistry = new SheetsRegistry();
 
@@ -22,18 +24,21 @@ const renderer = node => {
   const generateClassName = createGenerateClassName();
 
   const App = (
-    <JssProvider
-      registry={sheetsRegistry}
-      generateClassName={generateClassName}
-    >
-      <MuiThemeProvider theme={theme} sheetsManager={sheetsManager}>
-        {node}
-      </MuiThemeProvider>
-    </JssProvider>
+    <Provider store={store}>
+      <JssProvider
+        registry={sheetsRegistry}
+        generateClassName={generateClassName}
+      >
+        <MuiThemeProvider theme={theme} sheetsManager={sheetsManager}>
+          {node}
+        </MuiThemeProvider>
+      </JssProvider>
+    </Provider>
   );
   return {
     html: renderToString(App),
-    css: sheetsRegistry.toString()
+    css: sheetsRegistry.toString(),
+    serverState: store.getState()
   };
 };
 

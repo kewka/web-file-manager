@@ -6,6 +6,7 @@ import Document from '~/Document';
 
 import apiRouter from './routes/api';
 import renderer from './renderer';
+import configureStore from '~/store';
 
 const assets = require(process.env.RAZZLE_ASSETS_MANIFEST);
 
@@ -16,13 +17,16 @@ server
   .use('/api', apiRouter)
   .get('/*', async (req, res) => {
     try {
+      const store = configureStore();
+
       const html = await render({
         req,
         res,
         routes,
         assets,
         document: Document,
-        customRenderer: renderer
+        customRenderer: renderer(store),
+        store
       });
       res.send(html);
     } catch (error) {
