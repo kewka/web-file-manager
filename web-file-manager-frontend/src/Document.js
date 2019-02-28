@@ -8,7 +8,7 @@ class Document extends React.Component {
   }
 
   render() {
-    const { helmet, assets, data } = this.props;
+    const { helmet, assets, data, css } = this.props;
     // get attributes from React Helmet
     const htmlAttrs = helmet.htmlAttributes.toComponent();
     const bodyAttrs = helmet.bodyAttributes.toComponent();
@@ -26,6 +26,15 @@ class Document extends React.Component {
           {assets.client.css && (
             <link rel="stylesheet" href={assets.client.css} />
           )}
+          <link
+            rel="stylesheet"
+            href="https://fonts.googleapis.com/css?family=Roboto:300,400,500"
+          />
+          <link
+            rel="stylesheet"
+            href="https://fonts.googleapis.com/icon?family=Material+Icons"
+          />
+          <style id="jss-server-side">${css}</style>
         </head>
         <body {...bodyAttrs}>
           <AfterRoot />

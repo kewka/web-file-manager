@@ -6,16 +6,19 @@
     "start": "razzle start",
     "build": "razzle build",
     "test": "razzle test --env=jsdom",
-    "start:prod": "NODE_ENV=production node build/server.js"
+    "start:prod": "NODE_ENV=production node build/server.js",
+    "clean": "rimraf build node_modules/.cache"
   },
   "dependencies": {
     "@jaredpalmer/after": "latest",
     "@material-ui/core": "^3.9.2",
     "express": "^4.16.2",
+    "jss": "^9.8.7",
     "razzle": "^2.4.1",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
     "react-helmet": "^5.2.0",
+    "react-jss": "^8.6.1",
     "react-redux": "^6.0.1",
     "react-router-dom": "^4.2.2",
     "redux": "^4.0.1",
