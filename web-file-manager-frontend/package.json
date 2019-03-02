@@ -24,6 +24,7 @@
     "redux": "^4.0.1",
     "redux-promise-middleware": "^6.1.0",
     "redux-thunk": "^2.3.0",
+    "request": "^2.88.0",
     "serialize-javascript": "^1.6.1"
   },
   "devDependencies": {

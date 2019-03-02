@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import Header from '~/components/Header';
 
-export default class IndexPage extends Component {
+export default class DrivesPage extends Component {
   render() {
     return (
       <div>
-        <Header title="Index" />
+        <Header title="Drives" />
       </div>
     );
   }
