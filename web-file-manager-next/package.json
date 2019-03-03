@@ -26,6 +26,7 @@
     "redux-logger": "^3.0.6",
     "redux-promise-middleware": "^6.1.0",
     "redux-thunk": "^2.3.0",
+    "request": "^2.88.0",
     "reselect": "^4.0.0",
     "styled-jsx": "^3.2.1"
   },
