@@ -1,5 +1,5 @@
 function getUnitMultiplier(unit: string): number {
-    switch(unit.toUpperCase()) {
+    switch (unit.toUpperCase()) {
         case 'BYTES':
             return 1;
         case 'KB':
@@ -19,7 +19,7 @@ function getUnitMultiplier(unit: string): number {
  * Converts the string with size to bytes.
  * @param size - The string with size. Example: '1.0 GB'.
  */
-export default function convertToBytes(size: string): number {
+export default function convertSizeToBytes(size: string): number {
     const [ value, unit ] = size.split(' ', 2);
     return Math.floor(Number(value) * getUnitMultiplier(unit));
 }

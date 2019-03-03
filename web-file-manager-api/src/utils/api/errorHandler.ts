@@ -8,6 +8,8 @@ export default function errorHandler(err: Error, req: Request, res: Response, ne
     }
 
     return res.json({
-        message: err.message
+        error: {
+            message: err.message
+        }
     });
 }

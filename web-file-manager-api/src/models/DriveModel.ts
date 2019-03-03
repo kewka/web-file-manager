@@ -1,34 +1,15 @@
-import njds, { IDriveDetail } from 'nodejs-disks';
+import { IDriveDetail } from 'nodejs-disks';
 import CryptoJS from 'crypto-js';
-import convertToBytes from '@/utils/convertToBytes';
-
-const getDrivesList = () => new Promise<string[]>((resolve, reject) => {
-    njds.drives((err, items) => {
-        if (err) {
-            reject(err);
-        } else {
-            resolve(items);
-        }
-    });
-});
-
-const getDrivesDetails = (list: string[]) => new Promise<IDriveDetail[]>((resolve, reject) => {
-    njds.drivesDetail(list, (err, details) => {
-        if (err) {
-            reject(err);
-        } else {
-            resolve(details);
-        }
-    });
-});
+import convertSizeToBytes from '@/utils/common/convertSizeToBytes';
+import getDrivesList from '@/utils/drives/getDrivesList';
+import getDrivesDetails from '@/utils/drives/getDrivesDetails';
 
 /**
  * Describes the drive model.
  */
 export default class DriveModel {
     public static async getDrives(): Promise<DriveModel[]> {
-        const excludedDrives = ['tmpfs']; // exclude temporary storages
-        const list = (await getDrivesList()).filter((drive) => !excludedDrives.includes(drive));
+        const list = await getDrivesList();
         const details = await getDrivesDetails(list);
         const drives = details.map((detail) => new DriveModel(detail));
         return drives;
@@ -64,7 +45,7 @@ export default class DriveModel {
         this.id = CryptoJS.MD5(detail.drive).toString();
         this.label = detail.drive;
         this.path = detail.mountpoint;
-        this.total = convertToBytes(detail.total);
-        this.available = convertToBytes(detail.available);
+        this.total = convertSizeToBytes(detail.total);
+        this.available = convertSizeToBytes(detail.available);
     }
 }

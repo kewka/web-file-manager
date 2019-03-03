@@ -1,8 +1,8 @@
+import './utils/common/logger';
 import express from 'express';
 import bodyParser from 'body-parser';
 import morgan from 'morgan';
 import router from './routes';
-import './utils/logger';
 
 const app = express();
 const port = +process.env.PORT || 8080;
