@@ -8,6 +8,8 @@ import withRedux from 'next-redux-wrapper';
 import getPageContext from '~/helpers/getPageContext';
 import configureStore from '~/store';
 
+import '~/static/index.css';
+
 @withRedux(configureStore)
 class MyApp extends App {
   static async getInitialProps({ Component, ctx }) {
