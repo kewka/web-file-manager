@@ -1,12 +1,23 @@
 import React from 'react';
 import App, { Container } from 'next/app';
-import Head from 'next/head';
+import { Provider } from 'react-redux';
 import { MuiThemeProvider } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import JssProvider from 'react-jss/lib/JssProvider';
+import withRedux from 'next-redux-wrapper';
 import getPageContext from '~/helpers/getPageContext';
+import configureStore from '~/store';
 
+@withRedux(configureStore)
 class MyApp extends App {
+  static async getInitialProps({ Component, ctx }) {
+    return {
+      pageProps: Component.getInitialProps
+        ? await Component.getInitialProps(ctx)
+        : {}
+    };
+  }
+
   constructor() {
     super();
     this.pageContext = getPageContext();
@@ -21,24 +32,23 @@ class MyApp extends App {
   }
 
   render() {
-    const { Component, pageProps } = this.props;
+    const { Component, pageProps, store } = this.props;
     return (
       <Container>
-        <Head>
-          <title>My page</title>
-        </Head>
-        <JssProvider
-          registry={this.pageContext.sheetsRegistry}
-          generateClassName={this.pageContext.generateClassName}
-        >
-          <MuiThemeProvider
-            theme={this.pageContext.theme}
-            sheetsManager={this.pageContext.sheetsManager}
+        <Provider store={store}>
+          <JssProvider
+            registry={this.pageContext.sheetsRegistry}
+            generateClassName={this.pageContext.generateClassName}
           >
-            <CssBaseline />
-            <Component pageContext={this.pageContext} {...pageProps} />
-          </MuiThemeProvider>
-        </JssProvider>
+            <MuiThemeProvider
+              theme={this.pageContext.theme}
+              sheetsManager={this.pageContext.sheetsManager}
+            >
+              <CssBaseline />
+              <Component pageContext={this.pageContext} {...pageProps} />
+            </MuiThemeProvider>
+          </JssProvider>
+        </Provider>
       </Container>
     );
   }
