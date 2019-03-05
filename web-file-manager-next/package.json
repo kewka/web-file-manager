@@ -17,6 +17,7 @@
     "jss": "^9.8.7",
     "next": "^8.0.3",
     "next-redux-wrapper": "^3.0.0-alpha.2",
+    "numeral": "^2.0.6",
     "prop-types": "^15.7.2",
     "react": "^16.8.3",
     "react-dom": "^16.8.3",

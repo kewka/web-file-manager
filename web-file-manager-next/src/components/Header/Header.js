@@ -12,10 +12,6 @@ import Helmet from 'react-helmet';
 import Link from 'next/link';
 
 @withStyles(theme => ({
-  homeButton: {
-    marginLeft: -12,
-    marginRight: 20
-  },
   spacer: {
     flex: 1
   }
@@ -32,17 +28,15 @@ class Header extends Component {
         <Helmet title={title} />
         <AppBar position="sticky">
           <Toolbar>
-            <Link href="/" passHref>
-              <IconButton color="inherit" className={classes.homeButton}>
-                <Icon>home</Icon>
-              </IconButton>
-            </Link>
             <Typography color="inherit" variant="h6">
               {title}
             </Typography>
             <div className={classes.spacer} />
+            <Typography variant="caption" color="inherit">
+              kewka-pc (linux)
+            </Typography>
             <IconButton color="inherit">
-              <Icon>settings</Icon>
+              <Icon>computer</Icon>
             </IconButton>
           </Toolbar>
         </AppBar>
