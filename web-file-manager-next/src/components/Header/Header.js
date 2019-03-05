@@ -10,6 +10,8 @@ import {
 } from '@material-ui/core';
 import Helmet from 'react-helmet';
 import Link from 'next/link';
+import PathField from '../PathField';
+import Host from '~/containers/Host/Host';
 
 @withStyles(theme => ({
   spacer: {
@@ -32,12 +34,15 @@ class Header extends Component {
               {title}
             </Typography>
             <div className={classes.spacer} />
-            <Typography variant="caption" color="inherit">
-              kewka-pc (linux)
-            </Typography>
-            <IconButton color="inherit">
-              <Icon>computer</Icon>
-            </IconButton>
+            <Host />
+          </Toolbar>
+          <Toolbar>
+            <PathField />
+            <Link href="/drives" passHref>
+              <IconButton color="inherit">
+                <Icon>storage</Icon>
+              </IconButton>
+            </Link>
           </Toolbar>
         </AppBar>
       </React.Fragment>

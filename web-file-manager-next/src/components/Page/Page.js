@@ -11,9 +11,7 @@ import Header from '~/components/Header';
     flexDirection: 'column'
   },
   content: {
-    flex: 1,
-    margin: theme.spacing.unit,
-    padding: theme.spacing.unit
+    flex: 1
   }
 }))
 class Page extends Component {

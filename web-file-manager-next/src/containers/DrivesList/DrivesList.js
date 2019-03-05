@@ -1,19 +1,50 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { getDrivesArray } from '~/store/drives/selectors';
-import { List, ListSubheader } from '@material-ui/core';
-import DriveListItem from '~/components/DriveListItem';
+import {
+  List,
+  ListSubheader,
+  withStyles,
+  Divider,
+  Icon
+} from '@material-ui/core';
 import Link from 'next/link';
+import DriveListItem from '~/components/DriveListItem';
+import ProgressButton from '~/components/ProgressButton';
 
-@connect(state => ({
-  drives: state.drives,
-  drivesArray: getDrivesArray(state)
+import { getDrivesArray } from '~/store/drives/selectors';
+import { fetchDrives } from '~/store/drives/actions';
+
+@connect(
+  state => ({
+    drives: state.drives,
+    drivesArray: getDrivesArray(state)
+  }),
+  {
+    fetchDrives
+  }
+)
+@withStyles(theme => ({
+  subheader: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between'
+  }
 }))
 class DrivesList extends Component {
   renderSubheader = () => {
-    const { drivesArray } = this.props;
+    const { drivesArray, classes, fetchDrives, drives } = this.props;
 
-    return <ListSubheader>Drives ({drivesArray.length})</ListSubheader>;
+    return (
+      <React.Fragment>
+        <ListSubheader className={classes.subheader}>
+          Drives ({drivesArray.length})
+          <ProgressButton onClick={fetchDrives} isPending={drives.isPending}>
+            <Icon>refresh</Icon>
+          </ProgressButton>
+        </ListSubheader>
+        <Divider />
+      </React.Fragment>
+    );
   };
 
   renderItems = () => {
