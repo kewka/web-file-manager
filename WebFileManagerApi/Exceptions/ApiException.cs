@@ -1,4 +1,5 @@
 using System;
+using System.Net;
 
 namespace WebFileManagerApi.Exceptions
 {
@@ -15,5 +16,7 @@ namespace WebFileManagerApi.Exceptions
         {
             this.Status = status;
         }
+
+        public ApiException(string message, HttpStatusCode status) : this(message, (int)status) { }
     }
 }
