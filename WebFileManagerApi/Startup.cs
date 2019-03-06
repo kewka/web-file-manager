@@ -11,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json.Serialization;
+using WebFileManagerApi.Filters;
 
 namespace WebFileManagerApi
 {
@@ -29,7 +30,7 @@ namespace WebFileManagerApi
             services.AddMvc(options =>
             {
                 // Add filter for api exceptions
-                // options.Filters.Add(typeof(ApiExceptionFilter));
+                options.Filters.Add(typeof(ApiExceptionFilter));
             })
             .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
             .AddJsonOptions(options =>
