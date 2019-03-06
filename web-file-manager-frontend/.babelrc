@@ -1,12 +1,13 @@
 {
-    "presets": [
-      "razzle/babel", // NEEDED
-     ],
-     "plugins": [
-        ["babel-plugin-root-import", {
-            "rootPathPrefix": "~",
-            "rootPathSuffix": "src"
-        }],
-        "transform-decorators-legacy"
-    ]
-  }
+  "presets": [
+    "next/babel"
+   ],
+   "plugins": [
+      ["babel-plugin-root-import", {
+          "rootPathPrefix": "~",
+          "rootPathSuffix": "src"
+      }],
+      ["@babel/plugin-proposal-decorators", { "legacy": true }],
+      "inline-dotenv"
+  ]
+}
