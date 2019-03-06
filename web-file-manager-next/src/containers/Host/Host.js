@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
-import { Typography, IconButton, Icon, withStyles } from '@material-ui/core';
+import { Typography, Icon, withStyles } from '@material-ui/core';
 import { fetchHost } from '~/store/host/actions';
 import ProgressButton from '~/components/ProgressButton';
 
@@ -19,7 +19,7 @@ import ProgressButton from '~/components/ProgressButton';
     alignItems: 'center'
   }
 }))
-class Host extends Component {
+class Host extends PureComponent {
   componentDidMount() {
     const { fetchHost, hostData } = this.props;
     !hostData && fetchHost();

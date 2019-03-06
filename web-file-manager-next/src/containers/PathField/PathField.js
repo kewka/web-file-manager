@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { TextField, InputAdornment, Icon, withStyles } from '@material-ui/core';
 import { withRouter } from 'next/router';
 
@@ -20,7 +20,7 @@ import { withRouter } from 'next/router';
   }
 }))
 @withRouter
-class PathField extends Component {
+class PathField extends PureComponent {
   constructor(props) {
     super(props);
     const { router } = this.props;

@@ -13,7 +13,7 @@ import { withStyles, Typography } from '@material-ui/core';
 class IndexPage extends Component {
   get headerProps() {
     return {
-      title: 'File manager'
+      title: 'File Manager'
     };
   }
 

@@ -36,7 +36,7 @@ class DrivesList extends Component {
 
     return (
       <React.Fragment>
-        <ListSubheader className={classes.subheader}>
+        <ListSubheader disableSticky className={classes.subheader}>
           Drives ({drivesArray.length})
           <ProgressButton onClick={fetchDrives} isPending={drives.isPending}>
             <Icon>refresh</Icon>

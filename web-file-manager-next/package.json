@@ -5,7 +5,8 @@
     "dev": "node .",
     "build": "next build",
     "start": "NODE_ENV=production node .",
-    "clean": "rimraf node_modules/.cache .next"
+    "clean": "rimraf node_modules/.cache .next",
+    "lint": "eslint . --ext .js"
   },
   "dependencies": {
     "@material-ui/core": "^3.9.2",
