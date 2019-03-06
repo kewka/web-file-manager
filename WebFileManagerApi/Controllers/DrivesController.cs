@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -10,9 +11,12 @@ namespace WebFileManagerApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class HostController : ControllerBase
+    public class DrivesController : ControllerBase
     {
         [HttpGet]
-        public ActionResult<HostModel> Get() => new HostModel();
+        public IEnumerable<DriveModel> Get()
+        {
+            return DriveInfo.GetDrives().Select(d => new DriveModel(d));
+        }
     }
 }
