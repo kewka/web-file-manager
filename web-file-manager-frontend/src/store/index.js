@@ -1,25 +1,23 @@
 import { createStore, compose, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 import promise from 'redux-promise-middleware';
+import logger from 'redux-logger';
 import rootReducer from './rootReducer';
 import { registerStore } from '~/services/store';
 
 const composeEnhancers =
   (process.browser && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__) || compose;
 
-const enhancers = composeEnhancers(applyMiddleware(thunk, promise));
+const middlewares = [thunk, promise];
 
-export default function configureStore(preloadedState) {
-  const store = createStore(rootReducer, preloadedState, enhancers);
+if (process.env.NODE_ENV !== 'production') {
+  middlewares.push(logger);
+}
 
-  if (module.hot) {
-    // Enable Webpack hot module replacement for reducers
-    module.hot.accept('.', () => {
-      const nextRootReducer = require('./rootReducer').default;
-      store.replaceReducer(nextRootReducer);
-    });
-  }
+const enhancers = composeEnhancers(applyMiddleware(...middlewares));
 
+export default function configureStore(initialState) {
+  const store = createStore(rootReducer, initialState, enhancers);
   registerStore(store);
 
   return store;
