@@ -3,14 +3,14 @@ import DirectoryModel from '@/models/DirectoryModel';
 import createResponse from '@/utils/api/createResponse';
 
 interface IDirectoryGetParams {
-    path: string;
+    directoryPath: string;
 }
 
 export default express.Router()
 .post('/directory.get', (req, res, next) => {
     try {
-        const { path } = req.body as IDirectoryGetParams;
-        const directory = new DirectoryModel(path);
+        const { directoryPath } = req.body as IDirectoryGetParams;
+        const directory = new DirectoryModel(directoryPath);
         directory.loadContent();
         return res.json(createResponse(directory));
     } catch (e) {

@@ -3,7 +3,7 @@ import path from 'path';
 import CryptoJS from 'crypto-js';
 
 /**
- * Describes the file model. 
+ * Describes the file model.
  */
 export default class FileModel {
     /**

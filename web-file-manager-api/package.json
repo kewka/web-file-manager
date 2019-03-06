@@ -5,7 +5,8 @@
     "start": "node ./dist/main.js",
     "build": "webpack --mode production",
     "watch-ts": "webpack --watch --mode development",
-    "watch-node": "nodemon ./dist/main.js"
+    "watch-node": "nodemon ./dist/main.js",
+    "lint": "tslint -p ."
   },
   "license": "ISC",
   "devDependencies": {
