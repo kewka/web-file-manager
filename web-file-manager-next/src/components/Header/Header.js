@@ -10,7 +10,7 @@ import {
 } from '@material-ui/core';
 import Helmet from 'react-helmet';
 import Link from 'next/link';
-import PathField from '../PathField';
+import PathField from '~/containers/PathField';
 import Host from '~/containers/Host/Host';
 
 @withStyles(theme => ({

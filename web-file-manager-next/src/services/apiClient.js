@@ -7,6 +7,9 @@ export default async function apiClient(method, params = {}) {
 
   const url = `${apiUrl}/${method}`;
   const response = await fetch(url, {
+    headers: {
+      'Content-Type': 'application/json'
+    },
     method: 'POST',
     body: JSON.stringify(params)
   });

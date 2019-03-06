@@ -1,5 +1,6 @@
 require('dotenv').load();
 
+const bodyParser = require('body-parser');
 const express = require('express');
 const next = require('next');
 const apiRouter = require('./routes/api');
@@ -11,6 +12,7 @@ const app = next({ dev });
 const handle = app.getRequestHandler();
 
 app.prepare().then(() => {
+  server.use(bodyParser.json());
   server.use('/api', apiRouter);
   server.get('*', handle);
 
