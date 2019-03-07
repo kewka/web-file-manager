@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net;
 using Microsoft.AspNetCore.Mvc;
 using WebFileManagerApi.Exceptions;
@@ -11,7 +13,7 @@ namespace WebFileManagerApi.Controllers
     [ApiController]
     public class DirectoryController : ControllerBase
     {
-        [HttpGet]
+        [HttpGet("")]
         public DirectoryModel Get([FromQuery]string directoryPath)
         {
             if (string.IsNullOrEmpty(directoryPath))
@@ -37,6 +39,20 @@ namespace WebFileManagerApi.Controllers
             catch (Exception ex)
             {
                 throw new ApiException(ex.Message, HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpGet("search")]
+        public IEnumerable<DirectoryModel> Search([FromQuery]string directoryPath = "/")
+        {
+            try
+            {
+                var parentDirectory = directoryPath == "/" ? new DirectoryInfo("/") : Directory.GetParent(directoryPath);
+                return parentDirectory.GetDirectories().Select(d => new DirectoryModel(d));
+            }
+            catch
+            {
+                return new List<DirectoryModel>();
             }
         }
     }
