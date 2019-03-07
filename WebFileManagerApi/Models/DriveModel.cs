@@ -10,6 +10,11 @@ namespace WebFileManagerApi.Models
     public class DriveModel
     {
         /// <summary>
+        /// The drive info.
+        /// </summary>
+        private DriveInfo _info;
+
+        /// <summary>
         /// Gets the drive ID.
         /// </summary>
         public string Id
@@ -23,44 +28,38 @@ namespace WebFileManagerApi.Models
         /// <summary>
         /// Gets the drive label.
         /// </summary>
-        public string Label { get; }
+        public string Label => IsReady ? _info.VolumeLabel : null;
         /// <summary>
         /// Gets the drive name.
         /// </summary>
-        public string Name { get; }
+        public string Name => _info.Name;
         /// <summary>
         /// Gets the drive type.
         /// </summary>
-        public DriveType Type { get; }
+        public DriveType Type => _info.DriveType;
         /// <summary>
         /// Gets the drive format.
         /// </summary>
-        public string Format { get; }
+        public string Format => IsReady ? _info.DriveFormat : null;
         /// <summary>
         /// Gets a value that indicates whether a drive is ready.
         /// </summary>
-        public bool IsReady { get; }
+        public bool IsReady => _info.IsReady;
         /// <summary>
         /// Gets the amount of available free space on a drive, in bytes.
         /// </summary>
-        public long Available { get; }
+        public long Available => IsReady ? _info.AvailableFreeSpace : 0;
         /// <summary>
         /// Gets the total size of the drive, in bytes.
         /// </summary>
-        public long Total { get; }
+        public long Total => IsReady ? _info.TotalSize : 0;
         /// <summary>
         /// Initialize a new instance of the <see cref="DriveModel" /> class.
         /// </summary>
         /// <param name="info">Drive information.</param>
         public DriveModel(DriveInfo info)
         {
-            IsReady = info.IsReady;
-            Label = IsReady ? info.VolumeLabel : null;
-            Name = info.Name;
-            Type = info.DriveType;
-            Format = IsReady ? info.DriveFormat : null;
-            Available = IsReady ? info.AvailableFreeSpace : 0;
-            Total = IsReady ? info.TotalSize : 0;
+            _info = info;
         }
     }
 }

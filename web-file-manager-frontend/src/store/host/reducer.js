@@ -18,13 +18,13 @@ export default function host(state = initialState, action) {
       return {
         ...state,
         isPending: false,
-        error: action.payload.error
+        error: action.payload
       };
     case `${FETCH_HOST}_FULFILLED`:
       return {
         ...state,
         isPending: false,
-        data: action.payload.response
+        data: action.payload
       };
     default:
       return state;
