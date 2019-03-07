@@ -31,7 +31,7 @@ class Host extends PureComponent {
     return (
       <div className={classes.root}>
         <Typography variant="caption" color="inherit">
-          {hostData && `${hostData.hostname} (${hostData.platform})`}
+          {hostData && `${hostData.name} (${hostData.platform})`}
         </Typography>
         <ProgressButton isPending={host.isPending} color="inherit">
           <Icon>computer</Icon>
