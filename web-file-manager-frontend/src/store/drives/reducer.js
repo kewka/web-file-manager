@@ -19,10 +19,10 @@ export default function drives(state = initialState, action) {
       return {
         ...state,
         isPending: false,
-        error: action.payload.error
+        error: action.payload
       };
     case `${FETCH_DRIVES}_FULFILLED`:
-      const data = entityNormalize.toObject(action.payload.response, 'id');
+      const data = entityNormalize.toObject(action.payload, 'id');
       return {
         ...state,
         isPending: false,

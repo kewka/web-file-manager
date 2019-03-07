@@ -3,6 +3,7 @@ require('dotenv').load();
 const bodyParser = require('body-parser');
 const express = require('express');
 const next = require('next');
+
 const apiRouter = require('./routes/api');
 
 const port = +process.env.PORT || 3000;

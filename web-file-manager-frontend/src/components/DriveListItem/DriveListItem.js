@@ -13,12 +13,34 @@ export default class DriveListItem extends PureComponent {
   static propTypes = {
     drive: PropTypes.shape({
       id: PropTypes.string.isRequired,
-      label: PropTypes.string.isRequired,
-      path: PropTypes.string.isRequired,
-      total: PropTypes.number.isRequired,
-      available: PropTypes.number.isRequired
+      label: PropTypes.string,
+      name: PropTypes.string.isRequired,
+      type: PropTypes.number.isRequired,
+      format: PropTypes.string,
+      isReady: PropTypes.bool.isRequired,
+      available: PropTypes.number.isRequired,
+      total: PropTypes.number.isRequired
     }).isRequired
   };
+
+  get driveIcon() {
+    const { drive } = this.props;
+
+    switch (drive.type) {
+      case 2:
+        return 'usb';
+      case 3:
+        return 'storage';
+      case 4:
+        return 'network_wifi';
+      case 5:
+        return 'album';
+      case 6:
+        return 'memory';
+      default:
+        return 'help_outline';
+    }
+  }
 
   get secondaryText() {
     const { drive } = this.props;
@@ -31,11 +53,11 @@ export default class DriveListItem extends PureComponent {
   render() {
     const { drive, ...restProps } = this.props;
     return (
-      <ListItem {...restProps}>
+      <ListItem disabled={!drive.isReady} {...restProps}>
         <ListItemIcon>
-          <Icon>storage</Icon>
+          <Icon>{this.driveIcon}</Icon>
         </ListItemIcon>
-        <ListItemText primary={drive.label} secondary={this.secondaryText} />
+        <ListItemText primary={drive.name} secondary={this.secondaryText} />
         {restProps.href && (
           <ListItemSecondaryAction>
             <Icon>chevron_right</Icon>

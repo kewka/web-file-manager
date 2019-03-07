@@ -12,7 +12,10 @@ import {
 import Link from 'next/link';
 
 import ProgressButton from '~/components/ProgressButton';
-import { getDirectoryContentItems } from '~/store/directory/selectors';
+import {
+  getDirectoriesArray,
+  getFilesArray
+} from '~/store/directory/selectors';
 import { fetchDirectory } from '~/store/directory/actions';
 import FileListItem from '~/components/FileListItem';
 import DirectoryListItem from '~/components/DirectoryListItem';
@@ -20,7 +23,8 @@ import DirectoryListItem from '~/components/DirectoryListItem';
 @connect(
   state => ({
     directory: state.directory,
-    contentItems: getDirectoryContentItems(state)
+    directoriesArray: getDirectoriesArray(state),
+    filesArray: getFilesArray(state)
   }),
   {
     fetchDirectory
@@ -44,12 +48,13 @@ class DirectoryContentList extends Component {
   };
 
   renderSubheader = () => {
-    const { contentItems, classes, directory } = this.props;
+    const { classes, directory, filesArray, directoriesArray } = this.props;
+    const count = directoriesArray.length + filesArray.length;
 
     return (
       <React.Fragment>
         <ListSubheader disableSticky className={classes.subheader}>
-          Items ({contentItems.length})
+          Items ({count})
           <ProgressButton
             onClick={this.handleRefreshClick}
             isPending={directory.isPending}
@@ -77,16 +82,37 @@ class DirectoryContentList extends Component {
     });
   };
 
+  renderDirectories = () => {
+    const { directoriesArray } = this.props;
+
+    return directoriesArray.map(item => (
+      <Link href={`/explorer?path=${item.path}`} passHref key={item.id}>
+        <DirectoryListItem button directory={item} />
+      </Link>
+    ));
+  };
+
+  renderFiles = () => {
+    const { filesArray } = this.props;
+
+    return filesArray.map(item => <FileListItem key={item.id} file={item} />);
+  };
+
   render() {
     const { directory } = this.props;
+
+    if (directory.error) {
+      return (
+        <Typography color="error" align="center">
+          {directory.error.message}
+        </Typography>
+      );
+    }
+
     return (
       <List subheader={this.renderSubheader()}>
-        {directory.error && (
-          <Typography color="error" align="center">
-            {directory.error.message}
-          </Typography>
-        )}
-        {this.renderItems()}
+        {this.renderDirectories()}
+        {this.renderFiles()}
       </List>
     );
   }

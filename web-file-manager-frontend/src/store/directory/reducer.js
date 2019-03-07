@@ -1,9 +1,10 @@
-import { FETCH_DIRECTORY } from './constants';
+import { FETCH_DIRECTORY, SEARCH_DIRECTORY } from './constants';
 
 const initialState = {
   isPending: false,
   data: null,
-  error: null
+  error: null,
+  search: []
 };
 
 export default function directory(state = initialState, action) {
@@ -18,13 +19,18 @@ export default function directory(state = initialState, action) {
       return {
         ...state,
         isPending: false,
-        error: action.payload.error
+        error: action.payload
       };
     case `${FETCH_DIRECTORY}_FULFILLED`:
       return {
         ...state,
         isPending: false,
-        data: action.payload.response
+        data: action.payload
+      };
+    case `${SEARCH_DIRECTORY}_FULFILLED`:
+      return {
+        ...state,
+        search: action.payload
       };
     default:
       return state;

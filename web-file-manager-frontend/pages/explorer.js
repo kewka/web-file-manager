@@ -10,9 +10,7 @@ export default class ExplorerPage extends Component {
 
     try {
       await dispatch(fetchDirectory(directoryPath));
-    } catch (e) {
-      console.error(e);
-    }
+    } catch {}
 
     return { directoryPath };
   }
