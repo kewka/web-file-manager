@@ -23,6 +23,25 @@ export default class DriveListItem extends PureComponent {
     }).isRequired
   };
 
+  get driveIcon() {
+    const { drive } = this.props;
+
+    switch (drive.type) {
+      case 2:
+        return 'usb';
+      case 3:
+        return 'storage';
+      case 4:
+        return 'network_wifi';
+      case 5:
+        return 'album';
+      case 6:
+        return 'memory';
+      default:
+        return 'help_outline';
+    }
+  }
+
   get secondaryText() {
     const { drive } = this.props;
     const { available, total } = drive;
@@ -36,7 +55,7 @@ export default class DriveListItem extends PureComponent {
     return (
       <ListItem disabled={!drive.isReady} {...restProps}>
         <ListItemIcon>
-          <Icon>storage</Icon>
+          <Icon>{this.driveIcon}</Icon>
         </ListItemIcon>
         <ListItemText primary={drive.name} secondary={this.secondaryText} />
         {restProps.href && (

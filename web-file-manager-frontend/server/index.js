@@ -4,6 +4,8 @@ const bodyParser = require('body-parser');
 const express = require('express');
 const next = require('next');
 
+const apiRouter = require('./routes/api');
+
 const port = +process.env.PORT || 3000;
 const dev = process.env.NODE_ENV !== 'production';
 const server = express();
@@ -12,6 +14,7 @@ const handle = app.getRequestHandler();
 
 app.prepare().then(() => {
   server.use(bodyParser.json());
+  server.use('/api', apiRouter);
   server.get('*', handle);
 
   server.listen(port, err => {

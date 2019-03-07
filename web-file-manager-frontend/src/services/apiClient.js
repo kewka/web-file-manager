@@ -3,32 +3,29 @@ import qs from 'query-string';
 
 export default async function apiClient(
   method,
-  options = { body: {}, params: {}, method: 'GET' }
+  options = { body: null, params: {}, method: 'GET' }
 ) {
   const paramsString = qs.stringify(options.params);
-  let url = `${process.env.API_URL}/${method}`;
+  const apiUrl = process.browser
+    ? '/api'
+    : `http://localhost:${process.env.PORT}/api`;
+
+  let url = `${apiUrl}/${method}`;
 
   if (paramsString.length) {
     url += '?' + paramsString;
   }
 
   const fetchOptions = {
-    method: options.method,
-    strictSSL: false
+    method: options.method
   };
 
-  if (options.method === 'POST') {
+  if (options.body) {
     fetchOptions.headers = {
       'Content-Type': 'application/json'
     };
 
     fetchOptions.body = JSON.stringify(options.body);
-  }
-
-  if (!process.browser) {
-    fetchOptions.agent = new (require('https')).Agent({
-      rejectUnauthorized: false
-    });
   }
 
   const response = await fetch(url, fetchOptions);
