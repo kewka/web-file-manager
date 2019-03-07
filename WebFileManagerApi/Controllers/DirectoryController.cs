@@ -30,6 +30,10 @@ namespace WebFileManagerApi.Controllers
             {
                 throw new ApiException("Directory not found", HttpStatusCode.NotFound);
             }
+            catch (ApiException)
+            {
+                throw;
+            }
             catch (Exception ex)
             {
                 throw new ApiException(ex.Message, HttpStatusCode.InternalServerError);
