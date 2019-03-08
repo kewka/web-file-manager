@@ -43,12 +43,14 @@ namespace WebFileManagerApi.Controllers
         }
 
         [HttpGet("search")]
-        public IEnumerable<DirectoryModel> Search([FromQuery]string directoryPath = "/")
+        public IEnumerable<DirectoryModel> Search([FromQuery]string query = "/")
         {
             try
             {
-                var parentDirectory = directoryPath == "/" ? new DirectoryInfo("/") : Directory.GetParent(directoryPath);
-                return parentDirectory.GetDirectories().Select(d => new DirectoryModel(d));
+                var parentDirectory = query == "/" ? new DirectoryInfo("/") : Directory.GetParent(query);
+                return parentDirectory.GetDirectories()
+                                      .Select(d => new DirectoryModel(d))
+                                      .Where(d => d.Path.StartsWith(query));
             }
             catch
             {
