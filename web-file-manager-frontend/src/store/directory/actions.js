@@ -11,10 +11,10 @@ export function fetchDirectory(directoryPath) {
   };
 }
 
-export function searchDirectory(directoryPath) {
+export function searchDirectory(query) {
   return dispatch => {
     const payload = apiClient('directory/search', {
-      params: { directoryPath }
+      params: { query }
     });
     return dispatch({
       type: SEARCH_DIRECTORY,

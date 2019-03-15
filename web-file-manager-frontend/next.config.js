@@ -1,4 +1,5 @@
 const withCSS = require('@zeit/next-css');
+const Dotenv = require('dotenv-webpack');
 
 module.exports = withCSS({
   webpack: config => {
@@ -6,6 +7,12 @@ module.exports = withCSS({
     config.node = {
       fs: 'empty'
     };
+
+    config.plugins.push(
+      new Dotenv({
+        systemvars: true
+      })
+    );
 
     return config;
   }

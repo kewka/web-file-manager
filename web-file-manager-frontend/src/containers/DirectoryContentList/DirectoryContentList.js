@@ -19,6 +19,7 @@ import {
 import { fetchDirectory } from '~/store/directory/actions';
 import FileListItem from '~/components/FileListItem';
 import DirectoryListItem from '~/components/DirectoryListItem';
+import config from '~/config';
 
 @connect(
   state => ({
@@ -75,7 +76,11 @@ class DirectoryContentList extends Component {
       return isFile ? (
         <FileListItem key={item.id} file={item} />
       ) : (
-        <Link href={`/explorer?path=${item.path}`} passHref key={item.id}>
+        <Link
+          href={`${config.explorerPath}?path=${item.path}`}
+          passHref
+          key={item.id}
+        >
           <DirectoryListItem button directory={item} />
         </Link>
       );
@@ -86,7 +91,11 @@ class DirectoryContentList extends Component {
     const { directoriesArray } = this.props;
 
     return directoriesArray.map(item => (
-      <Link href={`/explorer?path=${item.path}`} passHref key={item.id}>
+      <Link
+        href={`${config.explorerPath}?path=${item.path}`}
+        passHref
+        key={item.id}
+      >
         <DirectoryListItem button directory={item} />
       </Link>
     ));

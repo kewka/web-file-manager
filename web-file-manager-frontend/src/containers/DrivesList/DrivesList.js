@@ -13,6 +13,7 @@ import ProgressButton from '~/components/ProgressButton';
 
 import { getDrivesArray } from '~/store/drives/selectors';
 import { fetchDrives } from '~/store/drives/actions';
+import config from '~/config';
 
 @connect(
   state => ({
@@ -50,7 +51,11 @@ class DrivesList extends Component {
   renderItems = () => {
     const { drivesArray } = this.props;
     return drivesArray.map(item => (
-      <Link href={`/explorer?path=${item.label}`} passHref key={item.id}>
+      <Link
+        href={`${config.explorerPath}?path=${item.label}`}
+        passHref
+        key={item.id}
+      >
         <DriveListItem button drive={item} />
       </Link>
     ));

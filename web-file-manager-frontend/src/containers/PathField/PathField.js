@@ -1,6 +1,11 @@
 import React, { PureComponent } from 'react';
-import { TextField, InputAdornment, Icon, withStyles } from '@material-ui/core';
+import { InputAdornment, Icon, withStyles } from '@material-ui/core';
 import { withRouter } from 'next/router';
+import { connect } from 'react-redux';
+import debounce from 'lodash/debounce';
+import Autocomplete from '~/components/Autocomplete';
+import { searchDirectory } from '~/store/directory/actions';
+import config from '~/config';
 
 @withStyles(theme => ({
   form: {
@@ -8,7 +13,8 @@ import { withRouter } from 'next/router';
     flex: 1
   },
   inputRoot: {
-    color: theme.palette.primary.contrastText
+    color: theme.palette.primary.contrastText + '!important',
+    caretColor: theme.palette.primary.contrastText
   },
   inputUnderline: {
     '&:before': {
@@ -20,6 +26,18 @@ import { withRouter } from 'next/router';
   }
 }))
 @withRouter
+@connect(
+  state => ({
+    searchResults: state.directory.search
+  }),
+  dispatch => {
+    return {
+      debounceSearchDirectory: debounce(query => {
+        dispatch(searchDirectory(query));
+      }, 400)
+    };
+  }
+)
 class PathField extends PureComponent {
   constructor(props) {
     super(props);
@@ -44,30 +62,48 @@ class PathField extends PureComponent {
   handleRouteChange = () => {
     const { router } = this.props;
     const { path } = router.query;
-    if (router.pathname !== '/explorer') {
+    if (router.pathname !== config.explorerPath) {
       this.setState({ path: '' });
     } else if (path) {
       this.setState({ path });
     }
   };
 
-  handlePathChange = ({ target }) => this.setState({ path: target.value });
+  handlePathSelect = path => {
+    this.setState({ path });
+    this.updateExplorer(path);
+  };
+
+  handlePathInput = path => {
+    const { debounceSearchDirectory } = this.props;
+    this.setState({ path });
+    debounceSearchDirectory(path);
+  };
 
   handleSubmit = event => {
     event.preventDefault();
-    const { router } = this.props;
-    const { path } = this.state;
-    router.push(`/explorer?path=${path}`);
+    this.updateExplorer(this.state.path);
   };
+
+  updateExplorer = path => {
+    const { router } = this.props;
+    router.push(`${config.explorerPath}?path=${path}`);
+  };
+
+  get suggestions() {
+    const { searchResults } = this.props;
+    return searchResults.map(item => ({
+      label: item.path,
+      value: item.path
+    }));
+  }
 
   render() {
     const { classes } = this.props;
     const { path } = this.state;
     return (
       <form className={classes.form} onSubmit={this.handleSubmit}>
-        <TextField
-          placeholder="Path to directory"
-          fullWidth={true}
+        <Autocomplete
           InputProps={{
             classes: {
               root: classes.inputRoot,
@@ -82,10 +118,14 @@ class PathField extends PureComponent {
               <InputAdornment position="end">
                 <Icon>keyboard_arrow_right</Icon>
               </InputAdornment>
-            )
+            ),
+            placeholder: 'Path to directory'
           }}
-          value={path}
-          onChange={this.handlePathChange}
+          suggestions={this.suggestions}
+          initialInputValue={path}
+          selectedItem={path}
+          onSelect={this.handlePathSelect}
+          onInputValueChange={this.handlePathInput}
         />
       </form>
     );

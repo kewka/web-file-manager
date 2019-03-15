@@ -22,7 +22,9 @@ class IndexPage extends Component {
     return (
       <Page className={classes.root} headerProps={this.headerProps}>
         <Typography variant="h5">Web File Manager</Typography>
-        <Typography variant="caption">version: 0.1.0</Typography>
+        <Typography variant="caption">
+          version: {process.env.npm_package_version}
+        </Typography>
       </Page>
     );
   }
