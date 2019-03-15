@@ -7,12 +7,17 @@ import JssProvider from 'react-jss/lib/JssProvider';
 import withRedux from 'next-redux-wrapper';
 import getPageContext from '~/helpers/getPageContext';
 import configureStore from '~/store';
+import * as hostActions from '~/store/host/actions';
 
 import '~/static/index.css';
 
 @withRedux(configureStore)
 class MyApp extends App {
   static async getInitialProps({ Component, ctx }) {
+    const { store } = ctx;
+
+    await store.dispatch(hostActions.fetchHost());
+
     return {
       pageProps: Component.getInitialProps
         ? await Component.getInitialProps(ctx)
