@@ -1,5 +1,6 @@
 {
   "name": "web-file-manager-frontend",
+  "version": "0.1.0",
   "main": "server/index.js",
   "scripts": {
     "dev": "node .",
@@ -14,10 +15,12 @@
     "body-parser": "^1.18.3",
     "classnames": "^2.2.6",
     "dotenv": "^6.2.0",
+    "downshift": "^3.2.7",
     "express": "^4.16.4",
     "express-http-proxy": "^1.5.1",
     "isomorphic-fetch": "^2.2.1",
     "jss": "^9.8.7",
+    "lodash": "^4.17.11",
     "next": "^8.0.3",
     "next-redux-wrapper": "^3.0.0-alpha.2",
     "numeral": "^2.0.6",
@@ -39,8 +42,8 @@
   "devDependencies": {
     "@babel/plugin-proposal-decorators": "^7.3.0",
     "babel-eslint": "^9.0.0",
-    "babel-plugin-inline-dotenv": "^1.2.1",
     "babel-plugin-root-import": "^6.1.0",
+    "dotenv-webpack": "^1.7.0",
     "eslint": "^5.15.0",
     "eslint-config-react-app": "^3.0.7",
     "eslint-plugin-flowtype": "^2.50.3",

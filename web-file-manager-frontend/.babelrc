@@ -7,7 +7,6 @@
           "rootPathPrefix": "~",
           "rootPathSuffix": "src"
       }],
-      ["@babel/plugin-proposal-decorators", { "legacy": true }],
-      "inline-dotenv"
+      ["@babel/plugin-proposal-decorators", { "legacy": true }]
   ]
 }
