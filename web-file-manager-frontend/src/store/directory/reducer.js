@@ -37,7 +37,7 @@ export default function directory(state = initialState, action) {
         search: action.payload
       };
 
-    case DELETE_DIRECTORY_ITEM:
+    case `${DELETE_DIRECTORY_ITEM}_FULFILLED`:
       const contentDirectories = state.data.content.directories.filter(
         directory => {
           return directory.path !== action.meta.directoryPath;

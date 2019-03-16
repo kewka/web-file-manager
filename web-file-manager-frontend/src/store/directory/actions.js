@@ -29,8 +29,13 @@ export function searchDirectory(query) {
 
 export function deleteDirectoryItem(directoryPath) {
   return dispatch => {
+    const payload = apiClient('directory', {
+      method: 'DELETE',
+      params: { directoryPath }
+    });
     return dispatch({
       type: DELETE_DIRECTORY_ITEM,
+      payload,
       meta: {
         directoryPath
       }

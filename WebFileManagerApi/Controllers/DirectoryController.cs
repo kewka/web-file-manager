@@ -57,5 +57,29 @@ namespace WebFileManagerApi.Controllers
                 return new List<DirectoryModel>();
             }
         }
+
+        [HttpDelete("")]
+        public void Delete([FromQuery]string directoryPath)
+        {
+            if (string.IsNullOrEmpty(directoryPath))
+            {
+                throw new ApiException("directoryPath is required.", HttpStatusCode.UnprocessableEntity);
+            }
+
+            if (!Directory.Exists(directoryPath))
+            {
+                throw new ApiException("Directory not found", HttpStatusCode.NotFound);
+            }
+
+
+            try
+            {
+                Directory.Delete(directoryPath, true);
+            }
+            catch (Exception ex)
+            {
+                throw new ApiException(ex.Message, HttpStatusCode.InternalServerError);
+            }
+        }
     }
 }
