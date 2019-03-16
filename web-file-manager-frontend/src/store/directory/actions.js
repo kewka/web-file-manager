@@ -1,5 +1,9 @@
 import apiClient from '~/services/apiClient';
-import { FETCH_DIRECTORY, SEARCH_DIRECTORY } from './constants';
+import {
+  FETCH_DIRECTORY,
+  SEARCH_DIRECTORY,
+  DELETE_DIRECTORY_ITEM
+} from './constants';
 
 export function fetchDirectory(directoryPath) {
   return dispatch => {
@@ -19,6 +23,17 @@ export function searchDirectory(query) {
     return dispatch({
       type: SEARCH_DIRECTORY,
       payload
+    });
+  };
+}
+
+export function deleteDirectoryItem(directoryPath) {
+  return dispatch => {
+    return dispatch({
+      type: DELETE_DIRECTORY_ITEM,
+      meta: {
+        directoryPath
+      }
     });
   };
 }

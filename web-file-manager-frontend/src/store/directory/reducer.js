@@ -1,4 +1,8 @@
-import { FETCH_DIRECTORY, SEARCH_DIRECTORY } from './constants';
+import {
+  FETCH_DIRECTORY,
+  SEARCH_DIRECTORY,
+  DELETE_DIRECTORY_ITEM
+} from './constants';
 
 const initialState = {
   isPending: false,
@@ -31,6 +35,24 @@ export default function directory(state = initialState, action) {
       return {
         ...state,
         search: action.payload
+      };
+
+    case DELETE_DIRECTORY_ITEM:
+      const contentDirectories = state.data.content.directories.filter(
+        directory => {
+          return directory.path !== action.meta.directoryPath;
+        }
+      );
+
+      return {
+        ...state,
+        data: {
+          ...state.data,
+          content: {
+            ...state.data.content,
+            directories: contentDirectories
+          }
+        }
       };
     default:
       return state;
