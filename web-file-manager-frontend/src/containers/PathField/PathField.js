@@ -1,11 +1,12 @@
 import React, { PureComponent } from 'react';
 import { InputAdornment, Icon, withStyles } from '@material-ui/core';
-import { withRouter } from 'next/router';
+import Router, { withRouter } from 'next/router';
 import { connect } from 'react-redux';
 import debounce from 'lodash/debounce';
 import Autocomplete from '~/components/Autocomplete';
 import { searchDirectory } from '~/store/directory/actions';
 import config from '~/config';
+import getExplorerPath from '~/services/getExplorerPath';
 
 @withStyles(theme => ({
   form: {
@@ -42,10 +43,8 @@ class PathField extends PureComponent {
   constructor(props) {
     super(props);
     const { router } = this.props;
-    const { path: defaultPath } = router.query;
-
     this.state = {
-      path: defaultPath || ''
+      path: getExplorerPath(router.pathname, router.query)
     };
   }
 
@@ -60,18 +59,15 @@ class PathField extends PureComponent {
   }
 
   handleRouteChange = () => {
-    const { router } = this.props;
-    const { path } = router.query;
-    if (router.pathname !== config.explorerPath) {
-      this.setState({ path: '' });
-    } else if (path) {
-      this.setState({ path });
-    }
+    this.setState({
+      path: getExplorerPath(Router.pathname, Router.query)
+    });
   };
 
   handlePathSelect = path => {
-    this.setState({ path });
-    this.updateExplorer(path);
+    this.setState({ path }, () => {
+      this.updateExplorer();
+    });
   };
 
   handlePathInput = path => {
@@ -82,12 +78,12 @@ class PathField extends PureComponent {
 
   handleSubmit = event => {
     event.preventDefault();
-    this.updateExplorer(this.state.path);
+    this.updateExplorer();
   };
 
-  updateExplorer = path => {
-    const { router } = this.props;
-    router.push(`${config.explorerPath}?path=${path}`);
+  updateExplorer = () => {
+    const { path } = this.state;
+    Router.push(`${config.explorerPath}?path=${path}`);
   };
 
   get suggestions() {

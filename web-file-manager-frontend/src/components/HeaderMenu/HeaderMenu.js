@@ -8,9 +8,8 @@ import {
   ListItemText
 } from '@material-ui/core';
 
-import { withRouter } from 'next/router';
+import Router from 'next/router';
 
-@withRouter
 class HeaderMenu extends Component {
   state = {
     anchorEl: null
@@ -24,7 +23,7 @@ class HeaderMenu extends Component {
       {
         icon: 'home',
         title: 'Home',
-        onClick: () => this.props.router.push('/')
+        onClick: () => Router.push('/')
       }
     ];
   }
