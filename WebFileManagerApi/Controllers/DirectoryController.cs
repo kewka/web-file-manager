@@ -18,7 +18,7 @@ namespace WebFileManagerApi.Controllers
         {
             if (string.IsNullOrEmpty(directoryPath))
             {
-                throw new ApiException("directoryPath is required.", HttpStatusCode.UnprocessableEntity);
+                throw ValidationExceptions.Required(nameof(directoryPath));
             }
 
             try
@@ -63,7 +63,7 @@ namespace WebFileManagerApi.Controllers
         {
             if (string.IsNullOrEmpty(directoryPath))
             {
-                throw new ApiException("directoryPath is required.", HttpStatusCode.UnprocessableEntity);
+                throw ValidationExceptions.Required(nameof(directoryPath));
             }
 
             if (!Directory.Exists(directoryPath))
@@ -80,6 +80,36 @@ namespace WebFileManagerApi.Controllers
             {
                 throw new ApiException(ex.Message, HttpStatusCode.InternalServerError);
             }
+        }
+
+        [HttpPut("rename")]
+        public DirectoryModel Rename([FromQuery]string directoryPath, RenameParams body)
+        {
+            if (string.IsNullOrEmpty(directoryPath))
+            {
+                throw ValidationExceptions.Required(nameof(directoryPath));
+            }
+            else if (string.IsNullOrEmpty(body.Name))
+            {
+                throw ValidationExceptions.Required(nameof(body.Name));
+            }
+
+            try
+            {
+                string destination = Path.Combine(directoryPath, "..", body.Name);
+                Directory.Move(directoryPath, destination);
+                var directoryInfo = new DirectoryInfo(destination);
+                return new DirectoryModel(directoryInfo);
+            }
+            catch (Exception ex)
+            {
+                throw new ApiException(ex.Message, HttpStatusCode.InternalServerError);
+            }
+        }
+
+        public class RenameParams
+        {
+            public string Name { get; set; }
         }
     }
 }

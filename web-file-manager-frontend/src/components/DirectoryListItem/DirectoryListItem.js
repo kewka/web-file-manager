@@ -17,12 +17,17 @@ import ConfirmationDialog from '../ConfirmationDialog';
 
 import config from '~/config';
 
-import { deleteDirectoryItem } from '~/store/directory/actions';
+import {
+  deleteDirectoryItem,
+  renameDirectoryItem
+} from '~/store/directory/actions';
+import RenameItemDialog from '../RenameItemDialog';
 
 @connect(
   null,
   {
-    deleteDirectoryItem
+    deleteDirectoryItem,
+    renameDirectoryItem
   }
 )
 class DirectoryListItem extends PureComponent {
@@ -37,7 +42,8 @@ class DirectoryListItem extends PureComponent {
   state = {
     menuPosition: null,
     showProperties: false,
-    showDelete: false
+    showDelete: false,
+    showRename: false
   };
 
   handleContextMenu = event => {
@@ -66,16 +72,30 @@ class DirectoryListItem extends PureComponent {
   handleDeleteClose = () => this.setState({ showDelete: false });
   handlePropertiesOpen = () => this.setState({ showProperties: true });
   handlePropertiesClose = () => this.setState({ showProperties: false });
+  handleRenameOpen = () => this.setState({ showRename: true });
+  handleRenameClose = () => this.setState({ showRename: false });
 
   handleDeleteConfirm = () => {
     const { deleteDirectoryItem, directory } = this.props;
     deleteDirectoryItem(directory.path);
-    this.setState({ showDelete: false });
+    this.handleDeleteClose();
+  };
+
+  handleRenameSubmit = ({ name }) => {
+    const { directory, renameDirectoryItem } = this.props;
+    renameDirectoryItem(directory.path, name);
+    this.handleRenameClose();
   };
 
   render() {
-    const { directory, ...restProps } = this.props;
-    const { menuPosition, showProperties, showDelete } = this.state;
+    const {
+      directory,
+      deleteDirectoryItem,
+      renameDirectoryItem,
+      ...restProps
+    } = this.props;
+    const { menuPosition, showProperties, showDelete, showRename } = this.state;
+
     return (
       <React.Fragment>
         <ListItem onContextMenu={this.handleContextMenu} {...restProps}>
@@ -95,10 +115,11 @@ class DirectoryListItem extends PureComponent {
           onOpen={this.handleOpen}
           onProperties={this.handlePropertiesOpen}
           onDelete={this.handleDeleteOpen}
+          onRename={this.handleRenameOpen}
         />
         <PropertiesDialog
           item={directory}
-          isFile={false}
+          itemType="directory"
           open={showProperties}
           onClose={this.handlePropertiesClose}
         />
@@ -111,6 +132,14 @@ class DirectoryListItem extends PureComponent {
         >
           Do you really want to delete the directory '{directory.name}'?
         </ConfirmationDialog>
+        {showRename && (
+          <RenameItemDialog
+            open={showRename}
+            onClose={this.handleRenameClose}
+            oldName={directory.name}
+            onSubmit={this.handleRenameSubmit}
+          />
+        )}
       </React.Fragment>
     );
   }

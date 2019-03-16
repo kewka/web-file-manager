@@ -24,33 +24,57 @@ class PropertiesDialog extends Component {
   static propTypes = {
     open: PropTypes.bool.isRequired,
     onClose: PropTypes.func,
-    isFile: PropTypes.bool,
     item: PropTypes.shape({
       path: PropTypes.string,
       name: PropTypes.string,
       size: PropTypes.number
-    }).isRequired
+    }).isRequired,
+    itemType: PropTypes.oneOf(['file', 'directory', 'drive'])
   };
 
   get properties() {
-    const { item, isFile } = this.props;
-    return [
-      {
-        title: 'Name',
-        icon: 'label',
-        value: item.name
-      },
-      {
-        title: 'Type',
-        icon: isFile ? 'insert_drive_file' : 'folder',
-        value: isFile ? 'File' : 'Directory'
-      },
-      {
-        title: 'Location',
-        icon: 'location_on',
-        value: item.path
-      }
-    ];
+    const { item, itemType } = this.props;
+
+    switch (itemType) {
+      case 'file':
+        return [
+          {
+            title: 'Name',
+            icon: 'label',
+            value: item.name
+          },
+          {
+            title: 'Type',
+            icon: 'insert_drive_file',
+            value: 'File'
+          },
+          {
+            title: 'Location',
+            icon: 'location_on',
+            value: item.path
+          }
+        ];
+      case 'directory':
+        return [
+          {
+            title: 'Name',
+            icon: 'label',
+            value: item.name
+          },
+          {
+            title: 'Type',
+            icon: 'folder',
+            value: 'Directory'
+          },
+          {
+            title: 'Location',
+            icon: 'location_on',
+            value: item.path
+          }
+        ];
+      default:
+        return [];
+    }
   }
 
   renderListItems = () => {

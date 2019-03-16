@@ -16,7 +16,7 @@ namespace WebFileManagerApi.Controllers
         {
             if (string.IsNullOrEmpty(filePath))
             {
-                throw new ApiException("filePath is required.", HttpStatusCode.UnprocessableEntity);
+                throw ValidationExceptions.Required(nameof(filePath));
             }
 
             try

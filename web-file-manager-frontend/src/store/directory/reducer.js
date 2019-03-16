@@ -1,7 +1,8 @@
 import {
   FETCH_DIRECTORY,
   SEARCH_DIRECTORY,
-  DELETE_DIRECTORY_ITEM
+  DELETE_DIRECTORY_ITEM,
+  RENAME_DIRECTORY_ITEM
 } from './constants';
 
 const initialState = {
@@ -38,22 +39,40 @@ export default function directory(state = initialState, action) {
       };
 
     case `${DELETE_DIRECTORY_ITEM}_FULFILLED`:
-      const contentDirectories = state.data.content.directories.filter(
-        directory => {
-          return directory.path !== action.meta.directoryPath;
-        }
-      );
-
       return {
         ...state,
         data: {
           ...state.data,
           content: {
             ...state.data.content,
-            directories: contentDirectories
+            directories: state.data.content.directories.filter(directory => {
+              return directory.path !== action.meta.directoryPath;
+            })
           }
         }
       };
+
+    case `${RENAME_DIRECTORY_ITEM}_FULFILLED`:
+      return {
+        ...state,
+        data: {
+          ...state.data,
+          content: {
+            ...state.data.content,
+            directories: state.data.content.directories.map(directory => {
+              if (directory.path === action.meta.directoryPath) {
+                return {
+                  ...directory,
+                  ...action.payload
+                };
+              }
+
+              return directory;
+            })
+          }
+        }
+      };
+      return { ...state };
     default:
       return state;
   }
