@@ -2,7 +2,8 @@ import {
   FETCH_DIRECTORY,
   SEARCH_DIRECTORY,
   DELETE_DIRECTORY_ITEM,
-  RENAME_DIRECTORY_ITEM
+  RENAME_DIRECTORY_ITEM,
+  RESET_DIRECTORY_DATA
 } from './constants';
 
 const initialState = {
@@ -14,24 +15,31 @@ const initialState = {
 
 export default function directory(state = initialState, action) {
   switch (action.type) {
+    case `${DELETE_DIRECTORY_ITEM}_PENDING`:
+    case `${RENAME_DIRECTORY_ITEM}_PENDING`:
     case `${FETCH_DIRECTORY}_PENDING`:
       return {
         ...state,
         isPending: true,
         error: null
       };
+
+    case `${DELETE_DIRECTORY_ITEM}_REJECTED`:
+    case `${RENAME_DIRECTORY_ITEM}_REJECTED`:
     case `${FETCH_DIRECTORY}_REJECTED`:
       return {
         ...state,
         isPending: false,
         error: action.payload
       };
+
     case `${FETCH_DIRECTORY}_FULFILLED`:
       return {
         ...state,
         isPending: false,
         data: action.payload
       };
+
     case `${SEARCH_DIRECTORY}_FULFILLED`:
       return {
         ...state,
@@ -41,6 +49,7 @@ export default function directory(state = initialState, action) {
     case `${DELETE_DIRECTORY_ITEM}_FULFILLED`:
       return {
         ...state,
+        isPending: false,
         data: {
           ...state.data,
           content: {
@@ -55,6 +64,7 @@ export default function directory(state = initialState, action) {
     case `${RENAME_DIRECTORY_ITEM}_FULFILLED`:
       return {
         ...state,
+        isPending: false,
         data: {
           ...state.data,
           content: {
@@ -72,7 +82,13 @@ export default function directory(state = initialState, action) {
           }
         }
       };
-      return { ...state };
+
+    case RESET_DIRECTORY_DATA:
+      return {
+        ...state,
+        data: null
+      };
+
     default:
       return state;
   }

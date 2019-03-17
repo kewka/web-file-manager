@@ -1,5 +1,6 @@
 import apiClient from '~/services/apiClient';
 import { FETCH_HOST } from './constants';
+import { showErrorNotification } from '../app/actions';
 
 export function fetchHost() {
   return (dispatch, state) => {
@@ -13,6 +14,9 @@ export function fetchHost() {
     return dispatch({
       type: FETCH_HOST,
       payload
+    }).catch(err => {
+      dispatch(showErrorNotification(err.message));
+      return Promise.reject(err);
     });
   };
 }

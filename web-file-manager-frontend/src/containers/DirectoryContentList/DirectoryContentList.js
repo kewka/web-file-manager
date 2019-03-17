@@ -6,8 +6,7 @@ import {
   ListSubheader,
   withStyles,
   Divider,
-  Icon,
-  Typography
+  Icon
 } from '@material-ui/core';
 import Link from 'next/link';
 
@@ -68,25 +67,6 @@ class DirectoryContentList extends Component {
     );
   };
 
-  renderItems = () => {
-    const { contentItems } = this.props;
-
-    return contentItems.map(item => {
-      const isFile = item.ext !== undefined;
-      return isFile ? (
-        <FileListItem key={item.id} file={item} />
-      ) : (
-        <Link
-          href={`${config.explorerPath}?path=${item.path}`}
-          passHref
-          key={item.id}
-        >
-          <DirectoryListItem button directory={item} />
-        </Link>
-      );
-    });
-  };
-
   renderDirectories = () => {
     const { directoriesArray } = this.props;
 
@@ -108,16 +88,6 @@ class DirectoryContentList extends Component {
   };
 
   render() {
-    const { directory } = this.props;
-
-    if (directory.error) {
-      return (
-        <Typography color="error" align="center">
-          {directory.error.message}
-        </Typography>
-      );
-    }
-
     return (
       <List subheader={this.renderSubheader()}>
         {this.renderDirectories()}

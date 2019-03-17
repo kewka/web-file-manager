@@ -15,19 +15,21 @@ export default function drives(state = initialState, action) {
         isPending: true,
         error: null
       };
+
     case `${FETCH_DRIVES}_REJECTED`:
       return {
         ...state,
         isPending: false,
         error: action.payload
       };
+
     case `${FETCH_DRIVES}_FULFILLED`:
-      const data = entityNormalize.toObject(action.payload, 'id');
       return {
         ...state,
         isPending: false,
-        data
+        data: entityNormalize.toObject(action.payload, 'id')
       };
+
     default:
       return state;
   }

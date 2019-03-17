@@ -38,5 +38,10 @@ export default async function apiClient(
     json = await response.json();
   } catch {}
 
-  return response.ok ? json : Promise.reject(json);
+  return response.ok
+    ? json
+    : Promise.reject({
+        ...json,
+        statusCode: response.status
+      });
 }

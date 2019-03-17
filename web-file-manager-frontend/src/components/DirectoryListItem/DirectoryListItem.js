@@ -11,7 +11,6 @@ import {
 
 import Router from 'next/router';
 
-import DirectoryListItemMenu from './DirectoryListItemMenu';
 import PropertiesDialog from '../PropertiesDialog';
 import ConfirmationDialog from '../ConfirmationDialog';
 
@@ -22,6 +21,7 @@ import {
   renameDirectoryItem
 } from '~/store/directory/actions';
 import RenameItemDialog from '../RenameItemDialog';
+import ContextMenu from '../ContextMenu';
 
 @connect(
   null,
@@ -46,6 +46,31 @@ class DirectoryListItem extends PureComponent {
     showRename: false
   };
 
+  get menuItems() {
+    return [
+      {
+        icon: 'folder_open',
+        title: 'Open',
+        onClick: this.handleOpen
+      },
+      {
+        icon: 'edit',
+        title: 'Rename',
+        onClick: () => this.setState({ showRename: true })
+      },
+      {
+        icon: 'delete',
+        title: 'Delete',
+        onClick: () => this.setState({ showDelete: true })
+      },
+      {
+        icon: 'info',
+        title: 'Properties',
+        onClick: () => this.setState({ showProperties: true })
+      }
+    ];
+  }
+
   handleContextMenu = event => {
     event.preventDefault();
 
@@ -68,11 +93,8 @@ class DirectoryListItem extends PureComponent {
     Router.push(`${config.explorerPath}?path=${directory.path}`);
   };
 
-  handleDeleteOpen = () => this.setState({ showDelete: true });
   handleDeleteClose = () => this.setState({ showDelete: false });
-  handlePropertiesOpen = () => this.setState({ showProperties: true });
   handlePropertiesClose = () => this.setState({ showProperties: false });
-  handleRenameOpen = () => this.setState({ showRename: true });
   handleRenameClose = () => this.setState({ showRename: false });
 
   handleDeleteConfirm = () => {
@@ -109,13 +131,10 @@ class DirectoryListItem extends PureComponent {
             </ListItemSecondaryAction>
           )}
         </ListItem>
-        <DirectoryListItemMenu
-          menuPosition={menuPosition}
-          onCloseMenu={this.handleMenuClose}
-          onOpen={this.handleOpen}
-          onProperties={this.handlePropertiesOpen}
-          onDelete={this.handleDeleteOpen}
-          onRename={this.handleRenameOpen}
+        <ContextMenu
+          position={menuPosition}
+          items={this.menuItems}
+          onClose={this.handleMenuClose}
         />
         <PropertiesDialog
           item={directory}

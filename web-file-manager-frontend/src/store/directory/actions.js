@@ -3,8 +3,10 @@ import {
   FETCH_DIRECTORY,
   SEARCH_DIRECTORY,
   DELETE_DIRECTORY_ITEM,
-  RENAME_DIRECTORY_ITEM
+  RENAME_DIRECTORY_ITEM,
+  RESET_DIRECTORY_DATA
 } from './constants';
+import { showErrorNotification } from '../app/actions';
 
 export function fetchDirectory(directoryPath) {
   return dispatch => {
@@ -12,6 +14,9 @@ export function fetchDirectory(directoryPath) {
     return dispatch({
       type: FETCH_DIRECTORY,
       payload
+    }).catch(err => {
+      dispatch(showErrorNotification(err.message));
+      return Promise.reject(err);
     });
   };
 }
@@ -40,6 +45,9 @@ export function deleteDirectoryItem(directoryPath) {
       meta: {
         directoryPath
       }
+    }).catch(err => {
+      dispatch(showErrorNotification(err.message));
+      return Promise.reject(err);
     });
   };
 }
@@ -58,6 +66,15 @@ export function renameDirectoryItem(directoryPath, name) {
       meta: {
         directoryPath
       }
+    }).catch(err => {
+      dispatch(showErrorNotification(err.message));
+      return Promise.reject(err);
     });
+  };
+}
+
+export function resetDirectoryData() {
+  return {
+    type: RESET_DIRECTORY_DATA
   };
 }

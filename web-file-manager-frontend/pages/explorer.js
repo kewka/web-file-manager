@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
+
 import Page from '~/components/Page';
-import { fetchDirectory } from '~/store/directory/actions';
 import DirectoryContentList from '~/containers/DirectoryContentList';
+
+import { fetchDirectory, resetDirectoryData } from '~/store/directory/actions';
 
 export default class ExplorerPage extends Component {
   static async getInitialProps({ query, store }) {
@@ -10,7 +12,9 @@ export default class ExplorerPage extends Component {
 
     try {
       await dispatch(fetchDirectory(directoryPath));
-    } catch {}
+    } catch {
+      dispatch(resetDirectoryData());
+    }
 
     return { directoryPath };
   }
