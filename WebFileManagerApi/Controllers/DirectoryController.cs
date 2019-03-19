@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -13,14 +14,10 @@ namespace WebFileManagerApi.Controllers
     [ApiController]
     public class DirectoryController : ControllerBase
     {
-        [HttpGet("")]
-        public DirectoryModel Get([FromQuery]string directoryPath)
+        // GET /directory
+        [HttpGet]
+        public DirectoryModel Get([FromQuery, Required]string directoryPath)
         {
-            if (string.IsNullOrEmpty(directoryPath))
-            {
-                throw ValidationExceptions.Required(nameof(directoryPath));
-            }
-
             try
             {
                 var directoryInfo = new DirectoryInfo(directoryPath);
@@ -32,16 +29,21 @@ namespace WebFileManagerApi.Controllers
             {
                 throw new ApiException("Directory not found", HttpStatusCode.NotFound);
             }
-            catch (ApiException)
-            {
-                throw;
-            }
-            catch (Exception ex)
-            {
-                throw new ApiException(ex.Message, HttpStatusCode.InternalServerError);
-            }
         }
 
+        // DELETE /directory
+        [HttpDelete]
+        public void Delete([FromQuery, Required]string directoryPath)
+        {
+            if (!Directory.Exists(directoryPath))
+            {
+                throw new ApiException("Directory not found", HttpStatusCode.NotFound);
+            }
+
+            Directory.Delete(directoryPath, true);
+        }
+
+        // GET /directory/search
         [HttpGet("search")]
         public IEnumerable<DirectoryModel> Search([FromQuery]string query = "/")
         {
@@ -52,63 +54,24 @@ namespace WebFileManagerApi.Controllers
                                       .Select(d => new DirectoryModel(d))
                                       .Where(d => d.Path.StartsWith(query));
             }
-            catch
-            {
-                return new List<DirectoryModel>();
-            }
+            catch { }
+
+            return new List<DirectoryModel>();
         }
 
-        [HttpDelete("")]
-        public void Delete([FromQuery]string directoryPath)
-        {
-            if (string.IsNullOrEmpty(directoryPath))
-            {
-                throw ValidationExceptions.Required(nameof(directoryPath));
-            }
-
-            if (!Directory.Exists(directoryPath))
-            {
-                throw new ApiException("Directory not found", HttpStatusCode.NotFound);
-            }
-
-
-            try
-            {
-                Directory.Delete(directoryPath, true);
-            }
-            catch (Exception ex)
-            {
-                throw new ApiException(ex.Message, HttpStatusCode.InternalServerError);
-            }
-        }
-
+        // PUT /directory/rename
         [HttpPut("rename")]
-        public DirectoryModel Rename([FromQuery]string directoryPath, RenameParams body)
+        public DirectoryModel Rename([FromQuery, Required]string directoryPath, RenameParams body)
         {
-            if (string.IsNullOrEmpty(directoryPath))
-            {
-                throw ValidationExceptions.Required(nameof(directoryPath));
-            }
-            else if (string.IsNullOrEmpty(body.Name))
-            {
-                throw ValidationExceptions.Required(nameof(body.Name));
-            }
-
-            try
-            {
-                string destination = Path.Combine(directoryPath, "..", body.Name);
-                Directory.Move(directoryPath, destination);
-                var directoryInfo = new DirectoryInfo(destination);
-                return new DirectoryModel(directoryInfo);
-            }
-            catch (Exception ex)
-            {
-                throw new ApiException(ex.Message, HttpStatusCode.InternalServerError);
-            }
+            string destination = Path.Combine(directoryPath, "..", body.Name);
+            Directory.Move(directoryPath, destination);
+            var directoryInfo = new DirectoryInfo(destination);
+            return new DirectoryModel(directoryInfo);
         }
 
         public class RenameParams
         {
+            [Required]
             public string Name { get; set; }
         }
     }

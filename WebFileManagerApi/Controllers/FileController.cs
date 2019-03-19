@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Net;
 using Microsoft.AspNetCore.Mvc;
@@ -11,33 +12,18 @@ namespace WebFileManagerApi.Controllers
     [ApiController]
     public class FileController : ControllerBase
     {
+        // GET /file
         [HttpGet]
-        public FileModel Get([FromQuery]string filePath)
+        public FileModel Get([FromQuery, Required]string filePath)
         {
-            if (string.IsNullOrEmpty(filePath))
+            var fileInfo = new FileInfo(filePath);
+
+            if (!fileInfo.Exists)
             {
-                throw ValidationExceptions.Required(nameof(filePath));
+                throw new ApiException("File not found", HttpStatusCode.NotFound);
             }
 
-            try
-            {
-                var fileInfo = new FileInfo(filePath);
-
-                if (!fileInfo.Exists)
-                {
-                    throw new ApiException("File not found", HttpStatusCode.NotFound);
-                }
-
-                return new FileModel(fileInfo);
-            }
-            catch (ApiException)
-            {
-                throw;
-            }
-            catch (Exception ex)
-            {
-                throw new ApiException(ex.Message, HttpStatusCode.InternalServerError);
-            }
+            return new FileModel(fileInfo);
         }
     }
 }
