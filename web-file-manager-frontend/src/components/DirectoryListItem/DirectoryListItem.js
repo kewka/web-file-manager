@@ -6,7 +6,8 @@ import {
   ListItemIcon,
   ListItemText,
   Icon,
-  ListItemSecondaryAction
+  ListItemSecondaryAction,
+  IconButton
 } from '@material-ui/core';
 
 import Router from 'next/router';
@@ -127,21 +128,26 @@ class DirectoryListItem extends PureComponent {
           <ListItemText primary={directory.name} secondary={directory.path} />
           {restProps.href && (
             <ListItemSecondaryAction>
-              <Icon>chevron_right</Icon>
+              <IconButton disabled disableRipple disableTouchRipple>
+                <Icon>chevron_right</Icon>
+              </IconButton>
             </ListItemSecondaryAction>
           )}
         </ListItem>
+
         <ContextMenu
           position={menuPosition}
           items={this.menuItems}
           onClose={this.handleMenuClose}
         />
+
         <PropertiesDialog
           item={directory}
           itemType="directory"
           open={showProperties}
           onClose={this.handlePropertiesClose}
         />
+
         <ConfirmationDialog
           title="Confirm the deletion"
           confirmText="Delete"
@@ -151,6 +157,7 @@ class DirectoryListItem extends PureComponent {
         >
           Do you really want to delete the directory '{directory.name}'?
         </ConfirmationDialog>
+
         {showRename && (
           <RenameItemDialog
             open={showRename}

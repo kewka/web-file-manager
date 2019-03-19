@@ -14,6 +14,8 @@ import {
   withStyles
 } from '@material-ui/core';
 
+import numeral from 'numeral';
+
 @withStyles(theme => ({
   secondaryText: {
     overflowX: 'auto',
@@ -44,6 +46,11 @@ class PropertiesDialog extends Component {
             value: item.name
           },
           {
+            title: 'Extension',
+            icon: 'extension',
+            value: item.ext
+          },
+          {
             title: 'Type',
             icon: 'insert_drive_file',
             value: 'File'
@@ -52,6 +59,11 @@ class PropertiesDialog extends Component {
             title: 'Location',
             icon: 'location_on',
             value: item.path
+          },
+          {
+            title: 'Size',
+            icon: 'data_usage',
+            value: numeral(item.size).format('0.0 b')
           }
         ];
       case 'directory':
