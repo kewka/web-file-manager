@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using WebFileManagerApi.Exceptions;
 using WebFileManagerApi.Models;
 
 namespace WebFileManagerApi.Controllers
@@ -12,6 +11,7 @@ namespace WebFileManagerApi.Controllers
     [ApiController]
     public class HostController : ControllerBase
     {
+        // GET /host
         [HttpGet]
         public ActionResult<HostModel> Get() => new HostModel();
     }
