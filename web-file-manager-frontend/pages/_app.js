@@ -20,7 +20,9 @@ class MyApp extends App {
   static async getInitialProps({ Component, ctx }) {
     const { store } = ctx;
 
-    await store.dispatch(hostActions.fetchHost());
+    try {
+      await store.dispatch(hostActions.fetchHost());
+    } catch {}
 
     let pageProps = Component.getInitialProps
       ? await Component.getInitialProps(ctx)
