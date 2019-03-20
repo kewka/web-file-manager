@@ -35,6 +35,13 @@ namespace WebFileManagerApi.Controllers
         [HttpDelete]
         public void Delete([FromQuery, Required]string directoryPath)
         {
+            bool isRootPath = Path.GetPathRoot(directoryPath) == directoryPath;
+
+            if (isRootPath)
+            {
+                throw new ApiException("You can not delete the root directory", HttpStatusCode.Forbidden);
+            }
+
             if (!Directory.Exists(directoryPath))
             {
                 throw new ApiException("Directory not found", HttpStatusCode.NotFound);
@@ -63,6 +70,13 @@ namespace WebFileManagerApi.Controllers
         [HttpPut("rename")]
         public DirectoryModel Rename([FromQuery, Required]string directoryPath, RenameParams body)
         {
+            bool isRootPath = Path.GetPathRoot(directoryPath) == directoryPath;
+
+            if (isRootPath)
+            {
+                throw new ApiException("You can not rename the root directory", HttpStatusCode.Forbidden);
+            }
+
             string destination = Path.Combine(directoryPath, "..", body.Name);
             Directory.Move(directoryPath, destination);
             var directoryInfo = new DirectoryInfo(destination);
