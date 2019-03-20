@@ -36,11 +36,13 @@
     "redux": "^4.0.1",
     "redux-form": "^8.1.0",
     "redux-logger": "^3.0.6",
+    "redux-persist": "^5.10.0",
     "redux-promise-middleware": "^6.1.0",
     "redux-thunk": "^2.3.0",
     "request": "^2.88.0",
     "reselect": "^4.0.0",
-    "styled-jsx": "^3.2.1"
+    "styled-jsx": "^3.2.1",
+    "uuid": "^3.3.2"
   },
   "devDependencies": {
     "@babel/plugin-proposal-decorators": "^7.3.0",

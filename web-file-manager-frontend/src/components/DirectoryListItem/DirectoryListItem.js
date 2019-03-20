@@ -23,12 +23,14 @@ import {
 } from '~/store/directory/actions';
 import RenameItemDialog from '../RenameItemDialog';
 import ContextMenu from '../ContextMenu';
+import { addDownload } from '~/store/downloads/actions';
 
 @connect(
   null,
   {
     deleteDirectoryItem,
-    renameDirectoryItem
+    renameDirectoryItem,
+    addDownload
   }
 )
 class DirectoryListItem extends PureComponent {
@@ -53,6 +55,11 @@ class DirectoryListItem extends PureComponent {
         icon: 'folder_open',
         title: 'Open',
         onClick: this.handleOpen
+      },
+      {
+        icon: 'file_download',
+        title: 'Download',
+        onClick: this.handleDownload
       },
       {
         icon: 'edit',
@@ -110,23 +117,38 @@ class DirectoryListItem extends PureComponent {
     this.handleRenameClose();
   };
 
-  render() {
+  handleDownload = () => {
+    const { addDownload, directory } = this.props;
+    addDownload(directory);
+  };
+
+  get listItemProps() {
     const {
       directory,
       deleteDirectoryItem,
       renameDirectoryItem,
-      ...restProps
+      addDownload,
+      ...listItemProps
     } = this.props;
+
+    return listItemProps;
+  }
+
+  render() {
+    const { directory, href } = this.props;
     const { menuPosition, showProperties, showDelete, showRename } = this.state;
 
     return (
       <React.Fragment>
-        <ListItem onContextMenu={this.handleContextMenu} {...restProps}>
+        <ListItem
+          onContextMenu={this.handleContextMenu}
+          {...this.listItemProps}
+        >
           <ListItemIcon>
             <Icon>folder</Icon>
           </ListItemIcon>
           <ListItemText primary={directory.name} secondary={directory.path} />
-          {restProps.href && (
+          {href && (
             <ListItemSecondaryAction>
               <IconButton disabled disableRipple disableTouchRipple>
                 <Icon>chevron_right</Icon>
