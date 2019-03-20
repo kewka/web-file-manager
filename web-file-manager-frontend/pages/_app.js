@@ -22,7 +22,9 @@ class MyApp extends App {
 
     try {
       await store.dispatch(hostActions.fetchHost());
-    } catch {}
+    } catch (error) {
+      console.error(error);
+    }
 
     let pageProps = Component.getInitialProps
       ? await Component.getInitialProps(ctx)
