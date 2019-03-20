@@ -10,7 +10,9 @@ export default class DrivesPage extends Component {
 
     try {
       await dispatch(fetchDrives());
-    } catch {}
+    } catch (error) {
+      console.error(error);
+    }
 
     return {};
   }
