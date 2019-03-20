@@ -1,4 +1,5 @@
 require('dotenv').load();
+require('./utils/logger');
 
 const bodyParser = require('body-parser');
 const express = require('express');
