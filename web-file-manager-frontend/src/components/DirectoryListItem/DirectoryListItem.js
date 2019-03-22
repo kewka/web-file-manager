@@ -14,6 +14,8 @@ import Router from 'next/router';
 
 import PropertiesDialog from '../PropertiesDialog';
 import ConfirmationDialog from '../ConfirmationDialog';
+import RenameItemDialog from '../RenameItemDialog';
+import ContextMenu from '../ContextMenu';
 
 import config from '~/config';
 
@@ -21,9 +23,9 @@ import {
   deleteDirectoryItem,
   renameDirectoryItem
 } from '~/store/directory/actions';
-import RenameItemDialog from '../RenameItemDialog';
-import ContextMenu from '../ContextMenu';
 import { addDownload } from '~/store/downloads/actions';
+
+import { downloadDirectory } from '~/services/download';
 
 @connect(
   null,
@@ -119,6 +121,7 @@ class DirectoryListItem extends PureComponent {
 
   handleDownload = () => {
     const { addDownload, directory } = this.props;
+    downloadDirectory(directory.path);
     addDownload(directory);
   };
 

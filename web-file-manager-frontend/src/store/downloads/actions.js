@@ -14,7 +14,7 @@ export function addDownload(item) {
       ...item,
       downloadId,
       time,
-      isFile: !!item.ext
+      type: item.ext !== undefined ? 'file' : 'directory'
     }
   };
 }

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Page from '~/components/Page';
+import DownloadsList from '~/containers/DownloadsList';
 
 export default class DrivesPage extends Component {
   get headerProps() {
@@ -9,6 +10,10 @@ export default class DrivesPage extends Component {
   }
 
   render() {
-    return <Page headerProps={this.headerProps} />;
+    return (
+      <Page headerProps={this.headerProps}>
+        <DownloadsList />
+      </Page>
+    );
   }
 }

@@ -1,7 +1,6 @@
 import React, { PureComponent } from 'react';
-import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import numeral from 'numeral';
+import PropTypes from 'prop-types';
 import {
   ListItem,
   ListItemIcon,
@@ -10,26 +9,26 @@ import {
   ListItemSecondaryAction,
   IconButton
 } from '@material-ui/core';
+
+import { removeDownload } from '~/store/downloads/actions';
 import ContextMenu from '../ContextMenu';
 import PropertiesDialog from '../PropertiesDialog';
 
-import { addDownload } from '~/store/downloads/actions';
-import { downloadFile } from '~/services/download';
+import Router from 'next/router';
+import config from '~/config';
 
 @connect(
   null,
   {
-    addDownload
+    removeDownload
   }
 )
-class FileListItem extends PureComponent {
+class DownloadListItem extends PureComponent {
   static propTypes = {
-    file: PropTypes.shape({
+    download: PropTypes.shape({
       path: PropTypes.string.isRequired,
-      id: PropTypes.string.isRequired,
-      name: PropTypes.string.isRequired,
-      ext: PropTypes.string.isRequired,
-      size: PropTypes.number.isRequired
+      downloadId: PropTypes.string.isRequired,
+      name: PropTypes.string.isRequired
     }).isRequired
   };
 
@@ -38,17 +37,22 @@ class FileListItem extends PureComponent {
     showProperties: false
   };
 
-  get fileSizeText() {
-    const { file } = this.props;
-    return `Size: ${numeral(file.size).format('0.0 b')}`;
+  get listItemProps() {
+    const { download, removeDownload, ...listItemProps } = this.props;
+    return listItemProps;
   }
 
   get menuItems() {
     return [
       {
-        icon: 'file_download',
-        title: 'Download',
-        onClick: this.handleDownload
+        icon: 'delete',
+        title: 'Remove',
+        onClick: this.handleRemove
+      },
+      {
+        icon: 'remove_red_eye',
+        title: 'Reveal in Explorer',
+        onClick: this.handleReveal
       },
       {
         icon: 'info',
@@ -58,10 +62,10 @@ class FileListItem extends PureComponent {
     ];
   }
 
-  get listProps() {
-    const { addDownload, ...listProps } = this.props;
-    return listProps;
-  }
+  handleRemove = () => {
+    const { download, removeDownload } = this.props;
+    removeDownload(download.downloadId);
+  };
 
   handleContextMenu = event => {
     event.preventDefault();
@@ -82,43 +86,51 @@ class FileListItem extends PureComponent {
 
   handlePropertiesClose = () => this.setState({ showProperties: false });
 
-  handleDownload = () => {
-    const { addDownload, file } = this.props;
-    downloadFile(file.path)
-    addDownload(file);
+  handleReveal = () => {
+    const { download } = this.props;
+    const { path: fullPath, type, name } = download;
+    const path =
+      type === 'directory'
+        ? fullPath
+        : fullPath.substring(0, fullPath.length - name.length);
+
+    Router.push(`${config.explorerPath}?path=${path}`);
   };
 
   render() {
-    const { file } = this.props;
+    const { download } = this.props;
     const { menuPosition, showProperties } = this.state;
+
     return (
       <React.Fragment>
         <ListItem
           button
           onContextMenu={this.handleContextMenu}
-          {...this.listProps}
+          {...this.listItemProps}
         >
           <ListItemIcon>
-            <Icon>insert_drive_file</Icon>
+            <Icon>
+              {download.type === 'file' ? 'insert_drive_file' : 'folder'}
+            </Icon>
           </ListItemIcon>
-          <ListItemText primary={file.name} secondary={this.fileSizeText} />
+          <ListItemText primary={download.name} secondary={download.path} />
           <ListItemSecondaryAction>
-            <IconButton onClick={this.handleContextMenu}>
-              <Icon>more_vert</Icon>
+            <IconButton onClick={this.handleRemove}>
+              <Icon color="error">close</Icon>
             </IconButton>
           </ListItemSecondaryAction>
         </ListItem>
 
         <ContextMenu
           position={menuPosition}
-          items={this.menuItems}
           onClose={this.handleMenuClose}
+          items={this.menuItems}
         />
 
         <PropertiesDialog
+          item={download}
+          itemType={download.type}
           open={showProperties}
-          item={file}
-          itemType="file"
           onClose={this.handlePropertiesClose}
         />
       </React.Fragment>
@@ -126,4 +138,4 @@ class FileListItem extends PureComponent {
   }
 }
 
-export default FileListItem;
+export default DownloadListItem;
