@@ -35,9 +35,11 @@ export default class ContextMenu extends PureComponent {
     const { items } = this.props;
     return items.map((item, i) => (
       <MenuItem onClick={this.handleItemClick(item.onClick)} key={i} dense>
-        <ListItemIcon>
-          <Icon>{item.icon}</Icon>
-        </ListItemIcon>
+        {item.icon && (
+          <ListItemIcon>
+            <Icon>{item.icon}</Icon>
+          </ListItemIcon>
+        )}
         <ListItemText>{item.title} </ListItemText>
       </MenuItem>
     ));

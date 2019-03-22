@@ -24,6 +24,11 @@ class HeaderMenu extends Component {
         icon: 'home',
         title: 'Home',
         onClick: () => Router.push('/')
+      },
+      {
+        icon: 'file_download',
+        title: 'Downloads',
+        onClick: () => Router.push('/downloads')
       }
     ];
   }
