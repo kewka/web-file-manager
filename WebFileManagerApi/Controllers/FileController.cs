@@ -1,6 +1,6 @@
 using System;
 using System.ComponentModel.DataAnnotations;
-using System.IO;
+using IO = System.IO;
 using System.Net;
 using Microsoft.AspNetCore.Mvc;
 using WebFileManagerApi.Exceptions;
@@ -16,7 +16,7 @@ namespace WebFileManagerApi.Controllers
         [HttpGet]
         public FileModel Get([FromQuery, Required]string filePath)
         {
-            var fileInfo = new FileInfo(filePath);
+            var fileInfo = new IO.FileInfo(filePath);
 
             if (!fileInfo.Exists)
             {
@@ -24,6 +24,18 @@ namespace WebFileManagerApi.Controllers
             }
 
             return new FileModel(fileInfo);
+        }
+
+        // DELETE /file
+        [HttpDelete]
+        public void Delete([FromQuery, Required]string filePath)
+        {
+            if (!IO.File.Exists(filePath))
+            {
+                throw new ApiException("File not found", HttpStatusCode.NotFound);
+            }
+
+            IO.File.Delete(filePath);
         }
     }
 }
