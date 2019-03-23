@@ -9,6 +9,11 @@ import {
 } from '@material-ui/core';
 import numeral from 'numeral';
 
+import PropertiesDialog from '../PropertiesDialog';
+import ContextMenu from '../ContextMenu';
+
+import { getDriveIcon } from '~/services/driveType';
+
 export default class DriveListItem extends PureComponent {
   static propTypes = {
     drive: PropTypes.shape({
@@ -23,23 +28,14 @@ export default class DriveListItem extends PureComponent {
     }).isRequired
   };
 
+  state = {
+    menuPosition: null,
+    showProperties: false
+  };
+
   get driveIcon() {
     const { drive } = this.props;
-
-    switch (drive.type) {
-      case 2:
-        return 'usb';
-      case 3:
-        return 'storage';
-      case 4:
-        return 'network_wifi';
-      case 5:
-        return 'album';
-      case 6:
-        return 'memory';
-      default:
-        return 'help_outline';
-    }
+    return getDriveIcon(drive.type);
   }
 
   get secondaryText() {
@@ -50,20 +46,69 @@ export default class DriveListItem extends PureComponent {
     return `${totalSize} (Available: ${availableSize})`;
   }
 
+  get menuItems() {
+    return [
+      {
+        icon: 'info',
+        title: 'Properties',
+        onClick: () => this.setState({ showProperties: true })
+      }
+    ];
+  }
+
+  handleContextMenu = event => {
+    event.preventDefault();
+
+    const menuPosition = {
+      left: event.clientX,
+      top: event.clientY
+    };
+
+    this.setState({ menuPosition });
+  };
+
+  handleMenuClose = event => {
+    event.preventDefault();
+    event.stopPropagation();
+    this.setState({ menuPosition: null });
+  };
+
+  handlePropertiesClose = () => this.setState({ showProperties: false });
+
   render() {
     const { drive, ...restProps } = this.props;
+    const { showProperties, menuPosition } = this.state;
     return (
-      <ListItem disabled={!drive.isReady} {...restProps}>
-        <ListItemIcon>
-          <Icon>{this.driveIcon}</Icon>
-        </ListItemIcon>
-        <ListItemText primary={drive.name} secondary={this.secondaryText} />
-        {restProps.href && (
-          <ListItemSecondaryAction>
-            <Icon>chevron_right</Icon>
-          </ListItemSecondaryAction>
-        )}
-      </ListItem>
+      <React.Fragment>
+        <ListItem
+          onContextMenu={this.handleContextMenu}
+          disabled={!drive.isReady}
+          {...restProps}
+        >
+          <ListItemIcon>
+            <Icon>{this.driveIcon}</Icon>
+          </ListItemIcon>
+          <ListItemText primary={drive.name} secondary={this.secondaryText} />
+          {restProps.href && (
+            <ListItemSecondaryAction>
+              <Icon>chevron_right</Icon>
+            </ListItemSecondaryAction>
+          )}
+        </ListItem>
+
+        <ContextMenu
+          position={menuPosition}
+          items={this.menuItems}
+          onClose={this.handleMenuClose}
+        />
+
+        <PropertiesDialog
+          item={drive}
+          itemType="drive"
+          open={showProperties}
+          onClose={this.handlePropertiesClose}
+        />
+      </React.Fragment>
     );
   }
 }
