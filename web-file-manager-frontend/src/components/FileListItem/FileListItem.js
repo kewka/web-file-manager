@@ -14,9 +14,10 @@ import {
 import ContextMenu from '../ContextMenu';
 import PropertiesDialog from '../PropertiesDialog';
 import RenameItemDialog from '../RenameItemDialog';
+import ConfirmationDialog from '../ConfirmationDialog';
 
 import { addDownload } from '~/store/downloads/actions';
-import { renameFileItem } from '~/store/directory/actions';
+import { renameFileItem, deleteFileItem } from '~/store/directory/actions';
 
 import { downloadFile } from '~/services/download';
 
@@ -24,7 +25,8 @@ import { downloadFile } from '~/services/download';
   null,
   {
     addDownload,
-    renameFileItem
+    renameFileItem,
+    deleteFileItem
   }
 )
 class FileListItem extends PureComponent {
@@ -63,6 +65,11 @@ class FileListItem extends PureComponent {
         onClick: () => this.setState({ showRename: true })
       },
       {
+        icon: 'delete',
+        title: 'Delete',
+        onClick: () => this.setState({ showDelete: true })
+      },
+      {
         icon: 'info',
         title: 'Properties',
         onClick: () => this.setState({ showProperties: true })
@@ -71,7 +78,12 @@ class FileListItem extends PureComponent {
   }
 
   get listProps() {
-    const { addDownload, ...listProps } = this.props;
+    const {
+      addDownload,
+      renameFileItem,
+      deleteFileItem,
+      ...listProps
+    } = this.props;
     return listProps;
   }
 
@@ -94,6 +106,13 @@ class FileListItem extends PureComponent {
 
   handlePropertiesClose = () => this.setState({ showProperties: false });
   handleRenameClose = () => this.setState({ showRename: false });
+  handleDeleteClose = () => this.setState({ showDelete: false });
+
+  handleDeleteConfirm = () => {
+    const { file, deleteFileItem } = this.props;
+    deleteFileItem(file.path);
+    this.handleDeleteClose();
+  };
 
   handleRenameSubmit = ({ name }) => {
     const { file, renameFileItem } = this.props;
@@ -109,7 +128,7 @@ class FileListItem extends PureComponent {
 
   render() {
     const { file } = this.props;
-    const { menuPosition, showProperties, showRename } = this.state;
+    const { menuPosition, showProperties, showRename, showDelete } = this.state;
     return (
       <React.Fragment>
         <ListItem
@@ -149,6 +168,16 @@ class FileListItem extends PureComponent {
             onSubmit={this.handleRenameSubmit}
           />
         )}
+
+        <ConfirmationDialog
+          title="Confirm the deletion"
+          confirmText="Delete"
+          open={showDelete}
+          onConfirm={this.handleDeleteConfirm}
+          onClose={this.handleDeleteClose}
+        >
+          Do you really want to delete the file '{file.name}'?
+        </ConfirmationDialog>
       </React.Fragment>
     );
   }

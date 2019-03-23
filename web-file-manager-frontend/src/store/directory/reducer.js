@@ -4,7 +4,8 @@ import {
   DELETE_DIRECTORY_ITEM,
   RENAME_DIRECTORY_ITEM,
   RESET_DIRECTORY_DATA,
-  RENAME_FILE_ITEM
+  RENAME_FILE_ITEM,
+  DELETE_FILE_ITEM
 } from './constants';
 
 const initialState = {
@@ -59,6 +60,21 @@ export default function directory(state = initialState, action) {
             ...state.data.content,
             directories: state.data.content.directories.filter(directory => {
               return directory.path !== action.meta.directoryPath;
+            })
+          }
+        }
+      };
+
+    case `${DELETE_FILE_ITEM}_FULFILLED`:
+      return {
+        ...state,
+        isPending: false,
+        data: {
+          ...state.data,
+          content: {
+            ...state.data.content,
+            files: state.data.content.files.filter(file => {
+              return file.path !== action.meta.filePath;
             })
           }
         }
