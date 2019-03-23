@@ -28,4 +28,4 @@ Soon
 ![](/images/properties.png)
 
 ## License
-MIT
+[MIT](/LICENSE)
