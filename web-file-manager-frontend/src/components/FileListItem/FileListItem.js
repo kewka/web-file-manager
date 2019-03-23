@@ -10,16 +10,21 @@ import {
   ListItemSecondaryAction,
   IconButton
 } from '@material-ui/core';
+
 import ContextMenu from '../ContextMenu';
 import PropertiesDialog from '../PropertiesDialog';
+import RenameItemDialog from '../RenameItemDialog';
 
 import { addDownload } from '~/store/downloads/actions';
+import { renameFileItem } from '~/store/directory/actions';
+
 import { downloadFile } from '~/services/download';
 
 @connect(
   null,
   {
-    addDownload
+    addDownload,
+    renameFileItem
   }
 )
 class FileListItem extends PureComponent {
@@ -35,7 +40,9 @@ class FileListItem extends PureComponent {
 
   state = {
     menuPosition: null,
-    showProperties: false
+    showProperties: false,
+    showRename: false,
+    showDelete: false
   };
 
   get fileSizeText() {
@@ -49,6 +56,11 @@ class FileListItem extends PureComponent {
         icon: 'file_download',
         title: 'Download',
         onClick: this.handleDownload
+      },
+      {
+        icon: 'edit',
+        title: 'Rename',
+        onClick: () => this.setState({ showRename: true })
       },
       {
         icon: 'info',
@@ -81,16 +93,23 @@ class FileListItem extends PureComponent {
   };
 
   handlePropertiesClose = () => this.setState({ showProperties: false });
+  handleRenameClose = () => this.setState({ showRename: false });
+
+  handleRenameSubmit = ({ name }) => {
+    const { file, renameFileItem } = this.props;
+    renameFileItem(file.path, name);
+    this.handleRenameClose();
+  };
 
   handleDownload = () => {
     const { addDownload, file } = this.props;
-    downloadFile(file.path)
+    downloadFile(file.path);
     addDownload(file);
   };
 
   render() {
     const { file } = this.props;
-    const { menuPosition, showProperties } = this.state;
+    const { menuPosition, showProperties, showRename } = this.state;
     return (
       <React.Fragment>
         <ListItem
@@ -121,6 +140,15 @@ class FileListItem extends PureComponent {
           itemType="file"
           onClose={this.handlePropertiesClose}
         />
+
+        {showRename && (
+          <RenameItemDialog
+            open={showRename}
+            onClose={this.handleRenameClose}
+            oldName={file.name}
+            onSubmit={this.handleRenameSubmit}
+          />
+        )}
       </React.Fragment>
     );
   }
