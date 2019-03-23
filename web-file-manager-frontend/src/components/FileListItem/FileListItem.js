@@ -10,16 +10,23 @@ import {
   ListItemSecondaryAction,
   IconButton
 } from '@material-ui/core';
+
 import ContextMenu from '../ContextMenu';
 import PropertiesDialog from '../PropertiesDialog';
+import RenameItemDialog from '../RenameItemDialog';
+import ConfirmationDialog from '../ConfirmationDialog';
 
 import { addDownload } from '~/store/downloads/actions';
+import { renameFileItem, deleteFileItem } from '~/store/directory/actions';
+
 import { downloadFile } from '~/services/download';
 
 @connect(
   null,
   {
-    addDownload
+    addDownload,
+    renameFileItem,
+    deleteFileItem
   }
 )
 class FileListItem extends PureComponent {
@@ -35,7 +42,9 @@ class FileListItem extends PureComponent {
 
   state = {
     menuPosition: null,
-    showProperties: false
+    showProperties: false,
+    showRename: false,
+    showDelete: false
   };
 
   get fileSizeText() {
@@ -51,6 +60,16 @@ class FileListItem extends PureComponent {
         onClick: this.handleDownload
       },
       {
+        icon: 'edit',
+        title: 'Rename',
+        onClick: () => this.setState({ showRename: true })
+      },
+      {
+        icon: 'delete',
+        title: 'Delete',
+        onClick: () => this.setState({ showDelete: true })
+      },
+      {
         icon: 'info',
         title: 'Properties',
         onClick: () => this.setState({ showProperties: true })
@@ -59,7 +78,12 @@ class FileListItem extends PureComponent {
   }
 
   get listProps() {
-    const { addDownload, ...listProps } = this.props;
+    const {
+      addDownload,
+      renameFileItem,
+      deleteFileItem,
+      ...listProps
+    } = this.props;
     return listProps;
   }
 
@@ -81,16 +105,30 @@ class FileListItem extends PureComponent {
   };
 
   handlePropertiesClose = () => this.setState({ showProperties: false });
+  handleRenameClose = () => this.setState({ showRename: false });
+  handleDeleteClose = () => this.setState({ showDelete: false });
+
+  handleDeleteConfirm = () => {
+    const { file, deleteFileItem } = this.props;
+    deleteFileItem(file.path);
+    this.handleDeleteClose();
+  };
+
+  handleRenameSubmit = ({ name }) => {
+    const { file, renameFileItem } = this.props;
+    renameFileItem(file.path, name);
+    this.handleRenameClose();
+  };
 
   handleDownload = () => {
     const { addDownload, file } = this.props;
-    downloadFile(file.path)
+    downloadFile(file.path);
     addDownload(file);
   };
 
   render() {
     const { file } = this.props;
-    const { menuPosition, showProperties } = this.state;
+    const { menuPosition, showProperties, showRename, showDelete } = this.state;
     return (
       <React.Fragment>
         <ListItem
@@ -121,6 +159,25 @@ class FileListItem extends PureComponent {
           itemType="file"
           onClose={this.handlePropertiesClose}
         />
+
+        {showRename && (
+          <RenameItemDialog
+            open={showRename}
+            onClose={this.handleRenameClose}
+            oldName={file.name}
+            onSubmit={this.handleRenameSubmit}
+          />
+        )}
+
+        <ConfirmationDialog
+          title="Confirm the deletion"
+          confirmText="Delete"
+          open={showDelete}
+          onConfirm={this.handleDeleteConfirm}
+          onClose={this.handleDeleteClose}
+        >
+          Do you really want to delete the file '{file.name}'?
+        </ConfirmationDialog>
       </React.Fragment>
     );
   }
