@@ -16,6 +16,8 @@ import {
 
 import numeral from 'numeral';
 
+import { getDriveType, getDriveIcon } from '~/services/driveType';
+
 @withStyles(theme => ({
   secondaryText: {
     overflowX: 'auto',
@@ -82,6 +84,44 @@ class PropertiesDialog extends Component {
             title: 'Location',
             icon: 'location_on',
             value: item.path
+          }
+        ];
+      case 'drive':
+        return [
+          {
+            title: 'Name',
+            icon: 'label',
+            value: item.name
+          },
+          {
+            title: 'Volume label',
+            icon: 'location_on',
+            value: item.label || 'Unknown'
+          },
+          {
+            title: 'Drive type',
+            icon: getDriveIcon(item.type),
+            value: getDriveType(item.type)
+          },
+          {
+            title: 'Format',
+            icon: 'extension',
+            value: item.format || 'Unknown'
+          },
+          {
+            title: 'Status',
+            icon: item.isReady ? 'check' : 'block',
+            value: item.isReady ? 'Ready' : 'Not ready'
+          },
+          {
+            title: 'Total size',
+            icon: 'data_usage',
+            value: numeral(item.total).format('0.0 b')
+          },
+          {
+            title: 'Available',
+            icon: 'cloud_queue',
+            value: numeral(item.available).format('0.0 b')
           }
         ];
       default:
