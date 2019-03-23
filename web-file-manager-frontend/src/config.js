@@ -1,3 +1,4 @@
 export default {
-  explorerPath: '/explorer'
+  explorerPath: '/explorer',
+  downloadPath: '/services/download'
 };

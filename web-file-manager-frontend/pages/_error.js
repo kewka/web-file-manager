@@ -9,7 +9,7 @@ import { withStyles, Typography } from '@material-ui/core';
     alignItems: 'center'
   }
 }))
-class Error extends React.Component {
+class ErrorPage extends React.Component {
   static getInitialProps({ res, err }) {
     const statusCode = res ? res.statusCode : err ? err.statusCode : null;
     return { statusCode };
@@ -35,4 +35,4 @@ class Error extends React.Component {
   }
 }
 
-export default Error;
+export default ErrorPage;

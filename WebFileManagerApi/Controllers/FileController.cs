@@ -1,9 +1,11 @@
 using System;
-using System.IO;
+using System.ComponentModel.DataAnnotations;
+using IO = System.IO;
 using System.Net;
 using Microsoft.AspNetCore.Mvc;
 using WebFileManagerApi.Exceptions;
 using WebFileManagerApi.Models;
+using System.Linq;
 
 namespace WebFileManagerApi.Controllers
 {
@@ -11,33 +13,47 @@ namespace WebFileManagerApi.Controllers
     [ApiController]
     public class FileController : ControllerBase
     {
+        // GET /file
         [HttpGet]
-        public FileModel Get([FromQuery]string filePath)
+        public FileModel Get([FromQuery, Required]string filePath)
         {
-            if (string.IsNullOrEmpty(filePath))
+            var fileInfo = new IO.FileInfo(filePath);
+
+            if (!fileInfo.Exists)
             {
-                throw new ApiException("filePath is required.", HttpStatusCode.UnprocessableEntity);
+                throw new ApiException("File not found", HttpStatusCode.NotFound);
             }
 
-            try
-            {
-                var fileInfo = new FileInfo(filePath);
+            return new FileModel(fileInfo);
+        }
 
-                if (!fileInfo.Exists)
-                {
-                    throw new ApiException("File not found", HttpStatusCode.NotFound);
-                }
+        // DELETE /file
+        [HttpDelete]
+        public void Delete([FromQuery, Required]string filePath)
+        {
+            if (!IO.File.Exists(filePath))
+            {
+                throw new ApiException("File not found", HttpStatusCode.NotFound);
+            }
 
-                return new FileModel(fileInfo);
-            }
-            catch (ApiException)
+            IO.File.Delete(filePath);
+        }
+
+        // PUT /file/rename
+        [HttpPut("rename")]
+        public FileModel Rename([FromQuery, Required]string filePath, RenameParams body)
+        {
+            var invalidChars = IO.Path.GetInvalidFileNameChars();
+
+            if (body.Name.IndexOfAny(invalidChars) != -1)
             {
-                throw;
+                throw new ApiException("Invalid file name", HttpStatusCode.BadRequest);
             }
-            catch (Exception ex)
-            {
-                throw new ApiException(ex.Message, HttpStatusCode.InternalServerError);
-            }
+
+            string destination = IO.Path.Combine(filePath, "..", body.Name);
+            IO.File.Move(filePath, destination);
+            var fileInfo = new IO.FileInfo(destination);
+            return new FileModel(fileInfo);
         }
     }
 }

@@ -31,7 +31,8 @@ export default async function apiClient(
   const response = await fetch(url, fetchOptions);
 
   let json = {
-    message: response.statusText
+    message: response.statusText,
+    statusCode: response.status
   };
 
   try {

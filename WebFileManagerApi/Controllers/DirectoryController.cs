@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -13,14 +14,10 @@ namespace WebFileManagerApi.Controllers
     [ApiController]
     public class DirectoryController : ControllerBase
     {
-        [HttpGet("")]
-        public DirectoryModel Get([FromQuery]string directoryPath)
+        // GET /directory
+        [HttpGet]
+        public DirectoryModel Get([FromQuery, Required]string directoryPath)
         {
-            if (string.IsNullOrEmpty(directoryPath))
-            {
-                throw new ApiException("directoryPath is required.", HttpStatusCode.UnprocessableEntity);
-            }
-
             try
             {
                 var directoryInfo = new DirectoryInfo(directoryPath);
@@ -32,16 +29,28 @@ namespace WebFileManagerApi.Controllers
             {
                 throw new ApiException("Directory not found", HttpStatusCode.NotFound);
             }
-            catch (ApiException)
-            {
-                throw;
-            }
-            catch (Exception ex)
-            {
-                throw new ApiException(ex.Message, HttpStatusCode.InternalServerError);
-            }
         }
 
+        // DELETE /directory
+        [HttpDelete]
+        public void Delete([FromQuery, Required]string directoryPath)
+        {
+            bool isRootPath = Path.GetPathRoot(directoryPath) == directoryPath;
+
+            if (isRootPath)
+            {
+                throw new ApiException("You can not delete the root directory", HttpStatusCode.Forbidden);
+            }
+
+            if (!Directory.Exists(directoryPath))
+            {
+                throw new ApiException("Directory not found", HttpStatusCode.NotFound);
+            }
+
+            Directory.Delete(directoryPath, true);
+        }
+
+        // GET /directory/search
         [HttpGet("search")]
         public IEnumerable<DirectoryModel> Search([FromQuery]string query = "/")
         {
@@ -52,10 +61,31 @@ namespace WebFileManagerApi.Controllers
                                       .Select(d => new DirectoryModel(d))
                                       .Where(d => d.Path.StartsWith(query));
             }
-            catch
+            catch { }
+
+            return new List<DirectoryModel>();
+        }
+
+        // PUT /directory/rename
+        [HttpPut("rename")]
+        public DirectoryModel Rename([FromQuery, Required]string directoryPath, RenameParams body)
+        {
+            bool isRootPath = Path.GetPathRoot(directoryPath) == directoryPath;
+
+            if (isRootPath)
             {
-                return new List<DirectoryModel>();
+                throw new ApiException("You can not rename the root directory", HttpStatusCode.Forbidden);
             }
+
+            if (body.Name.IndexOfAny(Path.GetInvalidPathChars()) != -1 || body.Name.Contains('/'))
+            {
+                throw new ApiException("Invalid directory name", HttpStatusCode.BadRequest);
+            }
+
+            string destination = Path.Combine(directoryPath, "..", body.Name);
+            Directory.Move(directoryPath, destination);
+            var directoryInfo = new DirectoryInfo(destination);
+            return new DirectoryModel(directoryInfo);
         }
     }
 }

@@ -11,23 +11,23 @@ namespace WebFileManagerApi.Exceptions
         /// <summary>
         /// Gets the HTTP status code.
         /// </summary>
-        public int Status { get; }
+        public int StatusCode { get; }
 
         /// <summary>
         /// Initialize a new instance of the <see cref="ApiException" /> class.
         /// </summary>
         /// <param name="message">Error message.</param>
-        /// <param name="status">Status code.</param>
-        public ApiException(string message, int status) : base(message)
+        /// <param name="statusCode">Status code.</param>
+        public ApiException(string message, int statusCode) : base(message)
         {
-            this.Status = status;
+            this.StatusCode = statusCode;
         }
 
         /// <summary>
         /// Initialize a new instance of the <see cref="ApiException" /> class.
         /// </summary>
         /// <param name="message">Error message.</param>
-        /// <param name="status">Status code.</param>
-        public ApiException(string message, HttpStatusCode status) : this(message, (int)status) { }
+        /// <param name="statusCode">Status code.</param>
+        public ApiException(string message, HttpStatusCode statusCode) : this(message, (int)statusCode) { }
     }
 }

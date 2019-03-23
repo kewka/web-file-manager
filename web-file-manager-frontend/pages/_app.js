@@ -4,20 +4,33 @@ import { Provider } from 'react-redux';
 import { MuiThemeProvider } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import JssProvider from 'react-jss/lib/JssProvider';
+import { SnackbarProvider } from 'notistack';
 import withRedux from 'next-redux-wrapper';
+
+import Notifier from '~/containers/Notifier';
+
 import getPageContext from '~/helpers/getPageContext';
 import configureStore from '~/store';
+import * as hostActions from '~/store/host/actions';
 
 import '~/static/index.css';
 
 @withRedux(configureStore)
 class MyApp extends App {
   static async getInitialProps({ Component, ctx }) {
-    return {
-      pageProps: Component.getInitialProps
-        ? await Component.getInitialProps(ctx)
-        : {}
-    };
+    const { store } = ctx;
+
+    try {
+      await store.dispatch(hostActions.fetchHost());
+    } catch (error) {
+      console.error(error);
+    }
+
+    let pageProps = Component.getInitialProps
+      ? await Component.getInitialProps(ctx)
+      : {};
+
+    return { pageProps, isServer: ctx.isServer };
   }
 
   constructor() {
@@ -34,7 +47,7 @@ class MyApp extends App {
   }
 
   render() {
-    const { Component, pageProps, store } = this.props;
+    const { Component, pageProps, store, isServer } = this.props;
     return (
       <Container>
         <Provider store={store}>
@@ -47,7 +60,12 @@ class MyApp extends App {
               sheetsManager={this.pageContext.sheetsManager}
             >
               <CssBaseline />
-              <Component pageContext={this.pageContext} {...pageProps} />
+              <SnackbarProvider>
+                <React.Fragment>
+                  <Notifier isServer={isServer} />
+                  <Component pageContext={this.pageContext} {...pageProps} />
+                </React.Fragment>
+              </SnackbarProvider>
             </MuiThemeProvider>
           </JssProvider>
         </Provider>

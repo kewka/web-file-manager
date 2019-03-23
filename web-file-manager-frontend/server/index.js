@@ -1,10 +1,11 @@
 require('dotenv').load();
+require('./utils/logger');
 
 const bodyParser = require('body-parser');
 const express = require('express');
 const next = require('next');
 
-const apiRouter = require('./routes/api');
+const createProxyMiddleware = require('./utils/createProxyMiddleware');
 
 const port = +process.env.PORT || 3000;
 const dev = process.env.NODE_ENV !== 'production';
@@ -14,7 +15,9 @@ const handle = app.getRequestHandler();
 
 app.prepare().then(() => {
   server.use(bodyParser.json());
-  server.use('/api', apiRouter);
+  server.use('/api', createProxyMiddleware('/api'));
+  server.use('/services', createProxyMiddleware('/services'));
+
   server.get('*', handle);
 
   server.listen(port, err => {

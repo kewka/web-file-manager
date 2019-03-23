@@ -2,6 +2,7 @@ import { createStore, compose, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 import promise from 'redux-promise-middleware';
 import logger from 'redux-logger';
+import { persistStore } from 'redux-persist';
 import rootReducer from './rootReducer';
 import { registerStore } from '~/services/store';
 
@@ -18,6 +19,7 @@ const enhancers = composeEnhancers(applyMiddleware(...middlewares));
 
 export default function configureStore(initialState) {
   const store = createStore(rootReducer, initialState, enhancers);
+  persistStore(store);
   registerStore(store);
 
   return store;

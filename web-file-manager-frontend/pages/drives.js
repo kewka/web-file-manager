@@ -1,12 +1,19 @@
 import React, { Component } from 'react';
 import Page from '~/components/Page';
-import { fetchDrives } from '~/store/drives/actions';
 import DrivesList from '~/containers/DrivesList';
+
+import { fetchDrives } from '~/store/drives/actions';
 
 export default class DrivesPage extends Component {
   static async getInitialProps({ store }) {
     const { dispatch } = store;
-    await dispatch(fetchDrives());
+
+    try {
+      await dispatch(fetchDrives());
+    } catch (error) {
+      console.error(error);
+    }
+
     return {};
   }
 
