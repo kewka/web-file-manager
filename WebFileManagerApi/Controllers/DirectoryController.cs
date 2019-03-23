@@ -77,16 +77,15 @@ namespace WebFileManagerApi.Controllers
                 throw new ApiException("You can not rename the root directory", HttpStatusCode.Forbidden);
             }
 
+            if (body.Name.IndexOfAny(Path.GetInvalidPathChars()) != -1 || body.Name.Contains('/'))
+            {
+                throw new ApiException("Invalid directory name", HttpStatusCode.BadRequest);
+            }
+
             string destination = Path.Combine(directoryPath, "..", body.Name);
             Directory.Move(directoryPath, destination);
             var directoryInfo = new DirectoryInfo(destination);
             return new DirectoryModel(directoryInfo);
-        }
-
-        public class RenameParams
-        {
-            [Required]
-            public string Name { get; set; }
         }
     }
 }
