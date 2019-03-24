@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
@@ -13,6 +14,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json.Serialization;
+using Swashbuckle.AspNetCore.Swagger;
 using WebFileManagerApi.Exceptions;
 using WebFileManagerApi.Models;
 
@@ -20,6 +22,9 @@ namespace WebFileManagerApi
 {
     public class Startup
     {
+        const string SWAGGER_TITLE = "Web file manager API";
+        const string SWAGGER_VERSION = "v0.1.0";
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -40,6 +45,8 @@ namespace WebFileManagerApi
                 };
             });
 
+            services.AddRouting(options => options.LowercaseUrls = true);
+
             services.Configure<ApiBehaviorOptions>(options =>
             {
                 options.InvalidModelStateResponseFactory = context =>
@@ -47,6 +54,18 @@ namespace WebFileManagerApi
                     IEnumerable<string> errors = context.ModelState.Values.SelectMany(v => v.Errors.Select(e => e.ErrorMessage));
                     throw new ApiException(errors.First(), HttpStatusCode.UnprocessableEntity);
                 };
+            });
+
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc(SWAGGER_VERSION, new Info
+                {
+                    Title = SWAGGER_TITLE,
+                    Version = SWAGGER_VERSION
+                });
+
+                var xmlFile = Path.ChangeExtension(typeof(Startup).Assembly.Location, ".xml");
+                c.IncludeXmlComments(xmlFile);
             });
         }
 
@@ -87,6 +106,12 @@ namespace WebFileManagerApi
 
             app.UseHttpsRedirection();
             app.UseMvc();
+
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint($"/swagger/{SWAGGER_VERSION}/swagger.json", SWAGGER_TITLE);
+            });
         }
     }
 }

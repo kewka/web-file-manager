@@ -13,7 +13,10 @@ namespace WebFileManagerApi.Controllers
     [ApiController]
     public class DrivesController : ControllerBase
     {
-        // GET /drives
+        /// <summary>
+        /// Gets a list of drives.
+        /// </summary>
+        /// <returns>Returns an enumeration with drive models.</returns>
         [HttpGet]
         public IEnumerable<DriveModel> Get()
         {

@@ -14,7 +14,11 @@ namespace WebFileManagerApi.Controllers
     [Route("services/[controller]")]
     public class DownloadController : ControllerBase
     {
-        // GET /download/directory
+        /// <summary>
+        /// Downloads the contents of the directory as a zip archive.
+        /// </summary>
+        /// <param name="directoryPath">The directory path.</param>
+        /// <returns>Returns a zip file stream.</returns>
         [HttpGet("directory")]
         public IActionResult Get([FromQuery, Required]string directoryPath)
         {
@@ -46,7 +50,11 @@ namespace WebFileManagerApi.Controllers
             }
         }
 
-        // GET /download/file
+        /// <summary>
+        /// Downloads a file.
+        /// </summary>
+        /// <param name="filePath">The file path.</param>
+        /// <returns>Returns a file stream.</returns>
         [HttpGet("file")]
         public ActionResult DownloadFile([FromQuery, Required]string filePath)
         {

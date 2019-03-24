@@ -13,7 +13,11 @@ namespace WebFileManagerApi.Controllers
     [ApiController]
     public class FileController : ControllerBase
     {
-        // GET /file
+        /// <summary>
+        /// Gets file information.
+        /// </summary>
+        /// <param name="filePath">The file path.</param>
+        /// <returns>Returns the file model.</returns>
         [HttpGet]
         public FileModel Get([FromQuery, Required]string filePath)
         {
@@ -27,7 +31,10 @@ namespace WebFileManagerApi.Controllers
             return new FileModel(fileInfo);
         }
 
-        // DELETE /file
+        /// <summary>
+        /// Deletes file.
+        /// </summary>
+        /// <param name="filePath">The file path.</param>
         [HttpDelete]
         public void Delete([FromQuery, Required]string filePath)
         {
@@ -39,7 +46,12 @@ namespace WebFileManagerApi.Controllers
             IO.File.Delete(filePath);
         }
 
-        // PUT /file/rename
+        /// <summary>
+        /// Renames file.
+        /// </summary>
+        /// <param name="filePath">The file path.</param>
+        /// <param name="body">These are the parameters for renaming.</param>
+        /// <returns>Returns the new file model.</returns>
         [HttpPut("rename")]
         public FileModel Rename([FromQuery, Required]string filePath, RenameParams body)
         {
