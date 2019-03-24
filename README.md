@@ -20,7 +20,7 @@ At the moment you can:
 - [ ] Copy/move files and directories
 
 ## Documentation
-* [API documentation](/wiki/API-documentation)
+* [API documentation](https://github.com/Kewka/web-file-manager/wiki/API-documentation)
 
 ## Screenshots
 ![](/images/drives.png)
