@@ -20,7 +20,7 @@ At the moment you can:
 - [ ] Copy/move files and directories
 
 ## Documentation
-Soon
+* [API documentation](/wiki/API-documentation)
 
 ## Screenshots
 ![](/images/drives.png)
