@@ -11,7 +11,10 @@ namespace WebFileManagerApi.Controllers
     [ApiController]
     public class HostController : ControllerBase
     {
-        // GET /host
+        /// <summary>
+        /// Gets host information.
+        /// </summary>
+        /// <returns>Returns the host model.</returns>
         [HttpGet]
         public ActionResult<HostModel> Get() => new HostModel();
     }

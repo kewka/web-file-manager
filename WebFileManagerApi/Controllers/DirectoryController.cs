@@ -14,7 +14,11 @@ namespace WebFileManagerApi.Controllers
     [ApiController]
     public class DirectoryController : ControllerBase
     {
-        // GET /directory
+        /// <summary>
+        /// Gets directory information.
+        /// </summary>
+        /// <param name="directoryPath">The directory path.</param>
+        /// <returns>Returns the directory model.</returns>
         [HttpGet]
         public DirectoryModel Get([FromQuery, Required]string directoryPath)
         {
@@ -31,7 +35,10 @@ namespace WebFileManagerApi.Controllers
             }
         }
 
-        // DELETE /directory
+        /// <summary>
+        /// Deletes directory.
+        /// </summary>
+        /// <param name="directoryPath">The directory path.</param>
         [HttpDelete]
         public void Delete([FromQuery, Required]string directoryPath)
         {
@@ -50,7 +57,11 @@ namespace WebFileManagerApi.Controllers
             Directory.Delete(directoryPath, true);
         }
 
-        // GET /directory/search
+        /// <summary>
+        /// Searches directory.
+        /// </summary>
+        /// <param name="query">The query with directory path.</param>
+        /// <returns>Returns an enumeration with directory models.</returns>
         [HttpGet("search")]
         public IEnumerable<DirectoryModel> Search([FromQuery]string query = "/")
         {
@@ -66,7 +77,12 @@ namespace WebFileManagerApi.Controllers
             return new List<DirectoryModel>();
         }
 
-        // PUT /directory/rename
+        /// <summary>
+        /// Renames directory.
+        /// </summary>
+        /// <param name="directoryPath">The directory path.</param>
+        /// <param name="body">These are the parameters for renaming.</param>
+        /// <returns>Returns the new directory model.</returns>
         [HttpPut("rename")]
         public DirectoryModel Rename([FromQuery, Required]string directoryPath, RenameParams body)
         {
